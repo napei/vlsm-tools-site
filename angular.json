@@ -10,8 +10,6 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "inlineTemplate": true,
-          "inlineStyle": true,
           "style": "scss",
           "skipTests": true
         },
@@ -56,6 +54,7 @@
           },
           "configurations": {
             "production": {
+              "aot": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -88,11 +87,13 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "vlsm-tools-site:build"
+            "browserTarget": "vlsm-tools-site:build",
+            "aot": true
           },
           "configurations": {
             "production": {
-              "browserTarget": "vlsm-tools-site:build:production"
+              "browserTarget": "vlsm-tools-site:build:production",
+              "aot": true
             }
           }
         },
