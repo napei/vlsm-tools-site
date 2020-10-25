@@ -7904,10 +7904,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vlsm-tools@0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/vlsm-tools/-/vlsm-tools-0.5.5.tgz#25d5b97b9549c95fcbc50930dec9e78609826723"
-  integrity sha512-raMprX8cgSf80UgtBgj5VRpxz/mX6fhBYXD43sFdvdE5G9/BgS5Ybt26yHEY4D0wd5xqYXc/pWDzcU/b0q1n6Q==
+vlsm-tools@0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/vlsm-tools/-/vlsm-tools-0.5.6.tgz#7b275eff62a13f5711c6bdf4b9e9a700a2ac80b6"
+  integrity sha512-crUxfVLswnjxk159UNyazIesgSUx6unim4b+NQ6tk+oJ8xbadzOMa+kjRxsrzb2I3SeT/15vfpdUvtQRIye1Aw==
   dependencies:
     "@types/jsbn" "^1.2.29"
     ip-address "^7.0.1"

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { IPv4Network, SubnetRequirements } from 'vlsm-tools';
-import { Address4 } from 'ip-address';
 
 @Component({
   selector: 'app-ipv4-vlsm',
