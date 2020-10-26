@@ -44,6 +44,28 @@ export class Ipv4VlsmComponent implements OnInit {
     this.requirementsForm.updateValueAndValidity();
   }
 
+  public calculate(v: IRequirementsForm): void {
+    console.log(v);
+    const r = v.requirements.filter((rr) => {
+      return isSubnetRequirementsValid(rr);
+    });
+
+    if (r.length < 1) {
+      this.network = null;
+      this._hasError.next(null);
+      return;
+    }
+
+    try {
+      this.network = new IPv4Network(r, v.majorNetwork);
+    } catch (e) {
+      this._hasError.next(true);
+      return;
+    }
+
+    this._hasError.next(false);
+  }
+
   public requirementsForm: FormGroup<IRequirementsForm> = new FormGroup<IRequirementsForm>({
     majorNetwork: new FormControl<string>('192.168.1.0/24', [Validators.required]),
     requirements: new FormArray<FormGroup<SubnetRequirements>>([
@@ -60,22 +82,7 @@ export class Ipv4VlsmComponent implements OnInit {
 
   ngOnInit(): void {
     this.requirementsForm.value$.subscribe((v: IRequirementsForm) => {
-      const r = v.requirements.filter((rr) => {
-        return isSubnetRequirementsValid(rr);
-      });
-
-      if (r.length < 1) {
-        return;
-      }
-
-      try {
-        this.network = new IPv4Network(r, v.majorNetwork);
-      } catch (e) {
-        this._hasError.next(true);
-        return;
-      }
-
-      this._hasError.next(false);
+      this.calculate(v);
     });
   }
 }
