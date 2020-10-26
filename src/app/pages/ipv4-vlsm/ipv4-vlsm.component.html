@@ -1,12 +1,59 @@
 <section>
   <h1>IPv4 Subnetting</h1>
   <hr />
-  <p><b>Network Address: </b>{{ majorNetwork }}</p>
-  <p><b>Network Size: </b>{{ network.networkSize | number }}</p>
-  <p><b>Required Hosts: </b>{{ network.requiredSize | number }}</p>
-  <p><b>Unused Hosts: </b>{{ network.unusedSize | number }}</p>
-  <p><b>Efficiency: </b>{{ network.efficiency | percent: '.3' }}</p>
-  <table class="table table-striped table-hover mt-4">
+
+  <div class="row">
+    <div class="col-6">
+      <form [formGroup]="requirementsForm">
+        <div class="card mb-1">
+          <h5 class="card-header">Major Network (slash notation)</h5>
+          <div class="card-body">
+            <input type="text" formControlName="majorNetwork" class="form-control" id="majorNetwork" />
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Subnet Requirements</h5>
+          <div class="card-body">
+            <ng-container formArrayName="requirements" *ngFor="let req of reqs.controls; let i = index">
+              <div class="row mb-2 g-1" [formGroup]="req">
+                <div class="col">
+                  <div class="input-group">
+                    <span class="input-group-text">{{ i + 1 | number }}</span>
+                    <input type="text" placeholder="Label" class="form-control" formControlName="label" />
+                  </div>
+                </div>
+                <div class="col">
+                  <input type="number" placeholder="Size" class="form-control" formControlName="size" />
+                </div>
+                <div class="col-auto">
+                  <button class="btn btn-danger" (click)="deleteRequirement(i)">x</button>
+                </div>
+              </div>
+            </ng-container>
+            <div>
+              <button class="btn btn-success" (click)="addNewRequirement()">Add +</button>
+              <button class="btn btn-primary float-right" (click)="calculate()">Calculate</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-6">
+      <div class="card">
+        <h5 class="card-header">Statistics</h5>
+        <div class="card-body">
+          <p><b>Network Address: </b>{{ requirementsForm.controls.majorNetwork.value$ | async }}</p>
+          <p><b>Network Size: </b>{{ network?.networkSize | number }}</p>
+          <p><b>Required Hosts: </b>{{ network?.requiredSize | number }}</p>
+          <p><b>Unused Hosts: </b>{{ network?.unusedSize | number }}</p>
+          <p><b>Efficiency: </b>{{ network?.efficiency | percent: '.3' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <table *ngIf="(hasError | async) === false" class="table table-striped table-hover mt-4">
     <thead>
       <tr>
         <th scope="col">Name</th>
@@ -38,4 +85,8 @@
       </ng-container>
     </tbody>
   </table>
+
+  <div *ngIf="hasError | async">
+    <h3 class="text-danger">Uh oh. Looks like your major network is too small.</h3>
+  </div>
 </section>

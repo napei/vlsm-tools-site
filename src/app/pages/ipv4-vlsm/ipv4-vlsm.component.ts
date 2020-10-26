@@ -1,5 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { IPv4Network, SubnetRequirements } from 'vlsm-tools';
+import { Validators } from '@angular/forms';
+import { IPv4Network, Subnet, SubnetRequirements } from 'vlsm-tools';
+import { FormArray, FormControl, FormGroup } from '@ngneat/reactive-forms';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+function isSubnetRequirementsValid(r: SubnetRequirements): boolean {
+  return r.label && r.label.length > 0 && r.size && r.size > 0;
+}
+
+interface IRequirementsForm {
+  majorNetwork: string;
+  requirements: SubnetRequirements[];
+}
 
 @Component({
   selector: 'app-ipv4-vlsm',
@@ -9,17 +21,61 @@ import { IPv4Network, SubnetRequirements } from 'vlsm-tools';
 export class Ipv4VlsmComponent implements OnInit {
   constructor() {}
   public network: IPv4Network;
-  public majorNetwork = '80.40.0.0/12';
-  ngOnInit(): void {
-    const req: SubnetRequirements[] = [
-      { label: 'VLAN37', size: 800 },
-      { label: 'VLAN379', size: 200 },
-      { label: 'VLAN516', size: 120 },
-      { label: 'Database LAN', size: 20 },
-      { label: 'VLAN1', size: 6 },
-      { label: 'Internal Serial', size: 2 },
-    ];
 
-    this.network = new IPv4Network(req, this.majorNetwork);
+  private _hasError: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  public get hasError(): Observable<boolean> {
+    return this._hasError.asObservable();
+  }
+
+  public createRequirement(): FormGroup<SubnetRequirements> {
+    return new FormGroup<SubnetRequirements>({
+      label: new FormControl<string>('', Validators.required),
+      size: new FormControl<number>(null, Validators.required),
+    });
+  }
+
+  public addNewRequirement(): void {
+    this.reqs.push(this.createRequirement());
+  }
+
+  public deleteRequirement(i: number): void {
+    this.reqs.controls.splice(i, 1);
+  }
+
+  public calculate(): void {}
+
+  public requirementsForm: FormGroup<IRequirementsForm> = new FormGroup<IRequirementsForm>({
+    majorNetwork: new FormControl<string>('192.168.1.0/24', [Validators.required]),
+    requirements: new FormArray<FormGroup<SubnetRequirements>>([
+      this.createRequirement(),
+      this.createRequirement(),
+      this.createRequirement(),
+      this.createRequirement(),
+    ]),
+  });
+
+  public get reqs(): FormArray<FormGroup<SubnetRequirements>> {
+    return this.requirementsForm.controls.requirements as FormArray<FormGroup<SubnetRequirements>>;
+  }
+
+  ngOnInit(): void {
+    this.requirementsForm.value$.subscribe((v: IRequirementsForm) => {
+      const r = v.requirements.filter((rr) => {
+        return isSubnetRequirementsValid(rr);
+      });
+
+      if (r.length < 1) {
+        return;
+      }
+
+      try {
+        this.network = new IPv4Network(r, v.majorNetwork);
+      } catch (e) {
+        this._hasError.next(true);
+        return;
+      }
+
+      this._hasError.next(false);
+    });
   }
 }
