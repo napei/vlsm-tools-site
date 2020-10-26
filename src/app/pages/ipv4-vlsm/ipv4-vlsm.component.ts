@@ -36,13 +36,13 @@ export class Ipv4VlsmComponent implements OnInit {
 
   public addNewRequirement(): void {
     this.reqs.push(this.createRequirement());
+    this.requirementsForm.updateValueAndValidity();
   }
 
   public deleteRequirement(i: number): void {
     this.reqs.controls.splice(i, 1);
+    this.requirementsForm.updateValueAndValidity();
   }
-
-  public calculate(): void {}
 
   public requirementsForm: FormGroup<IRequirementsForm> = new FormGroup<IRequirementsForm>({
     majorNetwork: new FormControl<string>('192.168.1.0/24', [Validators.required]),
