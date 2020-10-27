@@ -84,6 +84,14 @@ export class Ipv4VlsmComponent implements OnInit {
       this._settings.next(loadedData);
       console.log(loadedData);
       if (loadedData.formData) {
+        console.log(loadedData.formData.requirements.length);
+        if (loadedData.formData.requirements.length > 4) {
+          for (let i = 4; i < loadedData.formData.requirements.length; i++) {
+            this.reqs.push(this.createRequirement());
+          }
+          this.requirementsForm.updateValueAndValidity();
+        }
+
         this.requirementsForm.patchValue({ majorNetwork: loadedData.formData.majorNetwork, requirements: loadedData.formData.requirements });
       }
     }
