@@ -3,12 +3,20 @@
   <hr />
 
   <div class="row">
-    <div class="col-6">
+    <div class="col-lg-6 mb-1 mb-lg-0">
       <form [formGroup]="requirementsForm">
         <div class="card mb-1">
           <h5 class="card-header">Major Network (slash notation)</h5>
           <div class="card-body">
-            <input type="text" formControlName="majorNetwork" class="form-control" id="majorNetwork" />
+            <input
+              type="text"
+              formControlName="majorNetwork"
+              class="form-control"
+              [class.is-invalid]="hasRequiredError(f.majorNetwork) || hasPatternError(f.majorNetwork)"
+              id="majorNetwork"
+            />
+            <small class="invalid-feedback" *ngIf="hasRequiredError(f.majorNetwork)">Major network is required</small>
+            <small class="invalid-feedback" *ngIf="hasPatternError(f.majorNetwork)">That network address isn't valid.</small>
           </div>
         </div>
         <div class="card">
@@ -23,7 +31,16 @@
                   </div>
                 </div>
                 <div class="col">
-                  <input type="number" placeholder="Size" class="form-control" formControlName="size" />
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Size"
+                    class="form-control"
+                    [class.is-invalid]="hasMinError(req.controls.size)"
+                    formControlName="size"
+                  />
+                  <small class="invalid-feedback">Must be positive</small>
+                  <small class="invalid-feedback">Invalid</small>
                 </div>
                 <div class="col-auto">
                   <button class="btn btn-danger" (click)="deleteRequirement(i)">x</button>
@@ -32,14 +49,14 @@
             </ng-container>
             <div>
               <button class="btn btn-success" (click)="addNewRequirement()">Add +</button>
-              <!-- <button class="btn btn-primary float-right" (click)="calculate()">Calculate</button> -->
+              <button class="btn btn-danger float-right" (click)="reset()">Reset</button>
             </div>
           </div>
         </div>
       </form>
     </div>
 
-    <div class="col-6">
+    <div class="col-lg-6">
       <div class="card">
         <h5 class="card-header">Statistics</h5>
         <div class="card-body">
@@ -48,14 +65,16 @@
           <p><b>Required Hosts: </b>{{ network?.requiredSize | number }}</p>
           <p><b>Unused Hosts: </b>{{ network?.unusedSize | number }}</p>
           <p><b>Efficiency: </b>{{ network?.efficiency | percent: '.3' }}</p>
+          <hr />
+          <p>Your subnetting settings will be stored in your browser's local storage.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div>
-    <small class="float-right">Last Modified: {{ (settings$ | async).modified | date }}</small>
-    <table *ngIf="(hasError | async) === false" class="table table-striped table-hover mt-4">
+  <div *ngIf="(hasError | async) === false && requirementsForm.valid">
+    <small class="float-right">Last Modified: {{ (settings$ | async).modified | date: 'medium' }}</small>
+    <table class="table table-striped table-hover mt-4">
       <thead>
         <tr>
           <th scope="col">Name</th>

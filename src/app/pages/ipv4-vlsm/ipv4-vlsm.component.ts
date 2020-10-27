@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { IPv4Network, Subnet, SubnetRequirements } from 'vlsm-tools';
-import { FormArray, FormControl, FormGroup } from '@ngneat/reactive-forms';
+import { IPv4Network, SubnetRequirements } from 'vlsm-tools';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Ipv4StorageService, isSubnetRequirementsValid, Iv4RequirementsForm, Iv4Settings } from './ipv4-storage.service';
+
+const DEFAULT_NETWORK = '192.168.1.0/24';
+const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([1-9]|[1-2][0-9]|3[0-2])$/;
 
 @Component({
   selector: 'app-ipv4-vlsm',
@@ -26,8 +29,8 @@ export class Ipv4VlsmComponent implements OnInit {
 
   public createRequirement(): FormGroup<SubnetRequirements> {
     return new FormGroup<SubnetRequirements>({
-      label: new FormControl<string>('', Validators.required),
-      size: new FormControl<number>(null, Validators.required),
+      label: new FormControl<string>(''),
+      size: new FormControl<number>(null, [Validators.min(0)]),
     });
   }
 
@@ -65,7 +68,10 @@ export class Ipv4VlsmComponent implements OnInit {
   }
 
   public requirementsForm: FormGroup<Iv4RequirementsForm> = new FormGroup<Iv4RequirementsForm>({
-    majorNetwork: new FormControl<string>('192.168.1.0/24', [Validators.required]),
+    majorNetwork: new FormControl<string>(DEFAULT_NETWORK, {
+      validators: [Validators.required, Validators.pattern(IP_REGEX)],
+      updateOn: 'change',
+    }),
     requirements: new FormArray<FormGroup<SubnetRequirements>>([
       this.createRequirement(),
       this.createRequirement(),
@@ -74,8 +80,34 @@ export class Ipv4VlsmComponent implements OnInit {
     ]),
   });
 
+  public hasRequiredError(c: AbstractControl): boolean {
+    return c.touched && c.errors?.required;
+  }
+
+  public hasPatternError(c: AbstractControl): boolean {
+    return !c.pristine && c.errors?.pattern;
+  }
+
+  public hasMinError(c: AbstractControl): boolean {
+    return c.touched && c.errors?.min;
+  }
+
   public get reqs(): FormArray<FormGroup<SubnetRequirements>> {
     return this.requirementsForm.controls.requirements as FormArray<FormGroup<SubnetRequirements>>;
+  }
+
+  public get f() {
+    return this.requirementsForm.controls;
+  }
+
+  public reset(): void {
+    this.requirementsForm.reset({ majorNetwork: DEFAULT_NETWORK });
+    (this.requirementsForm.controls.requirements as FormArray<FormGroup<SubnetRequirements>>) = new FormArray<FormGroup<SubnetRequirements>>([
+      this.createRequirement(),
+      this.createRequirement(),
+      this.createRequirement(),
+      this.createRequirement(),
+    ]);
   }
 
   ngOnInit(): void {
@@ -101,14 +133,16 @@ export class Ipv4VlsmComponent implements OnInit {
     });
 
     this.requirementsForm.value$.subscribe((v: Iv4RequirementsForm) => {
-      this.calculate(v);
-      const newSettings = new Iv4Settings();
-      newSettings.modified = new Date();
-      newSettings.formData = {
-        majorNetwork: v.majorNetwork,
-        requirements: v.requirements,
-      };
-      this._settings.next(newSettings);
+      if (this.requirementsForm.valid) {
+        this.calculate(v);
+        const newSettings = new Iv4Settings();
+        newSettings.modified = new Date();
+        newSettings.formData = {
+          majorNetwork: v.majorNetwork,
+          requirements: v.requirements,
+        };
+        this._settings.next(newSettings);
+      }
     });
   }
 }
