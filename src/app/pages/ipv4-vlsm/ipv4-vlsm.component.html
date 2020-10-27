@@ -60,13 +60,20 @@
       <div class="card">
         <h5 class="card-header">Statistics</h5>
         <div class="card-body">
-          <p><b>Network Address: </b>{{ requirementsForm.controls.majorNetwork.value$ | async }}</p>
-          <p><b>Network Size: </b>{{ (network?.networkSize | number) || '...' }}</p>
-          <p><b>Required Hosts: </b>{{ (network?.requiredSize | number) || '...' }}</p>
-          <p><b>Unused Hosts: </b>{{ (network?.unusedSize | number) || '...' }}</p>
-          <p><b>Efficiency: </b>{{ (network?.efficiency | percent: '.3') || '...' }}</p>
-          <hr />
-          <p>Your subnetting settings will be stored in your browser's local storage.</p>
+          <div class="row">
+            <div class="col">
+              <p><b>Network Address: </b>{{ requirementsForm.controls.majorNetwork.value$ | async }}</p>
+              <p><b>Network Size: </b>{{ (network?.networkSize | number) || '...' }}</p>
+              <p><b>Required Hosts: </b>{{ (network?.requiredSize | number) || '...' }}</p>
+              <p><b>Unused Hosts: </b>{{ (network?.unusedSize | number) || '...' }}</p>
+              <p><b>Efficiency: </b>{{ (network?.efficiency | percent: '.3') || '...' }}</p>
+            </div>
+            <div class="col-auto">
+              <div class="chart-container">
+                <ngx-charts-pie-chart *ngIf="chartData" [results]="chartData" [labels]="true"> </ngx-charts-pie-chart>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -106,6 +113,7 @@
         </ng-container>
       </tbody>
     </table>
+    <small>Your subnetting settings will be stored in your browser's local storage.</small>
   </div>
 
   <div *ngIf="hasError | async">

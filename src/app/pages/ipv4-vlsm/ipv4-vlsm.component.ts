@@ -16,7 +16,10 @@ const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|
 })
 export class Ipv4VlsmComponent implements OnInit {
   private _settings: BehaviorSubject<Iv4Settings> = new BehaviorSubject<Iv4Settings>(new Iv4Settings());
-  public icons = {plus: faPlus, cross: faTimes, undo: faUndoAlt}
+  public icons = { plus: faPlus, cross: faTimes, undo: faUndoAlt };
+
+  public chartData: { name: string; value: number }[];
+
   public get settings$() {
     return this._settings.asObservable();
   }
@@ -66,6 +69,12 @@ export class Ipv4VlsmComponent implements OnInit {
     }
 
     this._hasError.next(false);
+    let d = this.network.subnets.map((s) => {
+      return { name: s.requirements.label, value: s.networkSize };
+    });
+    d.push({ name: 'Unallocated', value: this.network.unusedSize });
+    this.chartData = d;
+    console.log(d);
   }
 
   public requirementsForm: FormGroup<Iv4RequirementsForm> = new FormGroup<Iv4RequirementsForm>({

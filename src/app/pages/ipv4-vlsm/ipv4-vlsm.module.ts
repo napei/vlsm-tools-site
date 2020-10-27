@@ -6,12 +6,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Ipv4StorageService } from './ipv4-storage.service';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 export const routes: Routes = [{ path: '', component: Ipv4VlsmComponent }];
 
 @NgModule({
   declarations: [Ipv4VlsmComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, FontAwesomeModule, NgxChartsModule],
   providers: [Ipv4StorageService],
 })
 export class Ipv4VlsmModule {}
