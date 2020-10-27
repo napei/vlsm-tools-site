@@ -1,2 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap/scss/bootstrap';
+/**
+  * Flexbug #3 Workaround
+  *
+  * 1. Use `height` instead of `min-height`.
+  * 2. Flexbug #1 workaround.
+*/
+  .site {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100vh; /* 1 */
+  }
+
+  .site-footer,
+  .site-content {
+    -ms-flex-negative: 0;
+    flex-shrink: 0; /* 2 */
+  }
+
+  .site-content {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto; /* 2 */
+  }

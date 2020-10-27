@@ -1,3 +1,21 @@
-<div class="container">
-  <router-outlet></router-outlet>
+<div class="site">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" [routerLink]="['/']">Network Toolbox</a>
+      <div class="collapse navbar-collapse">
+        <div class="navbar-nav">
+          <a class="nav-link" [routerLink]="['/']" routerLinkActive="active">IPv4 Subnetting</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="site-content">
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <footer class="site-footer mb-3">
+    <hr />
+    <div class="text-center">Created by <a href="https://github.com/napei">Nathaniel Peiffer</a></div>
+  </footer>
 </div>
