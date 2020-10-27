@@ -53,38 +53,41 @@
     </div>
   </div>
 
-  <table *ngIf="(hasError | async) === false" class="table table-striped table-hover mt-4">
-    <thead>
-      <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Hosts Needed</th>
-        <th scope="col">Hosts Available</th>
-        <th scope="col">Unused Hosts</th>
-        <th scope="col">Network Address</th>
-        <th scope="col">Slash</th>
-        <th scope="col">Mask</th>
-        <th scope="col">Usable Range</th>
-        <th scope="col">Broadcast</th>
-        <th scope="col">Wildcard</th>
-      </tr>
-    </thead>
-    <tbody>
-      <ng-container *ngFor="let s of network.subnets">
+  <div>
+    <small class="float-right">Last Modified: {{ (settings$ | async).modified | date }}</small>
+    <table *ngIf="(hasError | async) === false" class="table table-striped table-hover mt-4">
+      <thead>
         <tr>
-          <th scope="row">{{ s.requirements.label }}</th>
-          <td>{{ s.requirements.size }}</td>
-          <td>{{ s.networkSize }}</td>
-          <td>{{ s.unusedSize }}</td>
-          <td>{{ s.address.addressMinusSuffix }}</td>
-          <td>{{ s.address.subnet }}</td>
-          <td>{{ s.subnetMaskDottedDecimal }}</td>
-          <td>{{ s.address.startAddressExclusive().address }} - {{ s.address.endAddressExclusive().address }}</td>
-          <td>{{ s.address.endAddress().address }}</td>
-          <td>{{ s.subnetMaskWildcard }}</td>
+          <th scope="col">Name</th>
+          <th scope="col">Hosts Needed</th>
+          <th scope="col">Hosts Available</th>
+          <th scope="col">Unused Hosts</th>
+          <th scope="col">Network Address</th>
+          <th scope="col">Slash</th>
+          <th scope="col">Mask</th>
+          <th scope="col">Usable Range</th>
+          <th scope="col">Broadcast</th>
+          <th scope="col">Wildcard</th>
         </tr>
-      </ng-container>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let s of network.subnets">
+          <tr>
+            <th scope="row">{{ s.requirements.label }}</th>
+            <td>{{ s.requirements.size }}</td>
+            <td>{{ s.networkSize }}</td>
+            <td>{{ s.unusedSize }}</td>
+            <td>{{ s.address.addressMinusSuffix }}</td>
+            <td>{{ s.address.subnet }}</td>
+            <td>{{ s.subnetMaskDottedDecimal }}</td>
+            <td>{{ s.address.startAddressExclusive().address }} - {{ s.address.endAddressExclusive().address }}</td>
+            <td>{{ s.address.endAddress().address }}</td>
+            <td>{{ s.subnetMaskWildcard }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
 
   <div *ngIf="hasError | async">
     <h3 class="text-danger">Uh oh. Looks like your major network is too small.</h3>
