@@ -4,6 +4,7 @@ import { IPv4Network, SubnetRequirements } from 'vlsm-tools';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Ipv4StorageService, isSubnetRequirementsValid, Iv4RequirementsForm, Iv4Settings } from './ipv4-storage.service';
+import { faPlus, faTimes, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
 
 const DEFAULT_NETWORK = '192.168.1.0/24';
 const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([1-9]|[1-2][0-9]|3[0-2])$/;
@@ -15,7 +16,7 @@ const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|
 })
 export class Ipv4VlsmComponent implements OnInit {
   private _settings: BehaviorSubject<Iv4Settings> = new BehaviorSubject<Iv4Settings>(new Iv4Settings());
-
+  public icons = {plus: faPlus, cross: faTimes, undo: faUndoAlt}
   public get settings$() {
     return this._settings.asObservable();
   }

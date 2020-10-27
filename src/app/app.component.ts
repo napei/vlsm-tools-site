@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
 
 @Component({
@@ -7,7 +8,6 @@ import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
   styles: [],
 })
 export class AppComponent {
-  title = 'vlsm-tools-site';
   constructor(private angulartics: Angulartics2GoogleGlobalSiteTag) {
     this.angulartics.startTracking();
   }

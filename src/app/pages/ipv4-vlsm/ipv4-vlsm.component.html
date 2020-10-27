@@ -43,13 +43,13 @@
                   <small class="invalid-feedback">Invalid</small>
                 </div>
                 <div class="col-auto">
-                  <button class="btn btn-danger" (click)="deleteRequirement(i)">x</button>
+                  <button class="btn btn-danger" (click)="deleteRequirement(i)"><fa-icon [icon]="icons.cross"></fa-icon></button>
                 </div>
               </div>
             </ng-container>
             <div>
-              <button class="btn btn-success" (click)="addNewRequirement()">Add +</button>
-              <button class="btn btn-danger float-right" (click)="reset()">Reset</button>
+              <button class="btn btn-success" (click)="addNewRequirement()"><fa-icon [icon]="icons.plus"></fa-icon> Add</button>
+              <button class="btn btn-danger float-right" (click)="reset()"><fa-icon [icon]="icons.undo"></fa-icon> Reset</button>
             </div>
           </div>
         </div>
@@ -61,10 +61,10 @@
         <h5 class="card-header">Statistics</h5>
         <div class="card-body">
           <p><b>Network Address: </b>{{ requirementsForm.controls.majorNetwork.value$ | async }}</p>
-          <p><b>Network Size: </b>{{ network?.networkSize | number }}</p>
-          <p><b>Required Hosts: </b>{{ network?.requiredSize | number }}</p>
-          <p><b>Unused Hosts: </b>{{ network?.unusedSize | number }}</p>
-          <p><b>Efficiency: </b>{{ network?.efficiency | percent: '.3' }}</p>
+          <p><b>Network Size: </b>{{ (network?.networkSize | number) || '...' }}</p>
+          <p><b>Required Hosts: </b>{{ (network?.requiredSize | number) || '...' }}</p>
+          <p><b>Unused Hosts: </b>{{ (network?.unusedSize | number) || '...' }}</p>
+          <p><b>Efficiency: </b>{{ (network?.efficiency | percent: '.3') || '...' }}</p>
           <hr />
           <p>Your subnetting settings will be stored in your browser's local storage.</p>
         </div>
