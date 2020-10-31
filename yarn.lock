@@ -1312,10 +1312,15 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
-"@types/node@*", "@types/node@^14.14.5":
+"@types/node@*":
   version "14.14.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.5.tgz#e92d3b8f76583efa26c1a63a21c9d3c1143daa29"
   integrity sha512-H5Wn24s/ZOukBmDn03nnGTp18A60ny9AmCwnEcgJiTgSGsCO7k+NWP7zjCCbhlcnVCoI+co52dUAt9GMhOSULw==
+
+"@types/node@^14.14.6":
+  version "14.14.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.6.tgz#146d3da57b3c636cc0d1769396ce1cfa8991147f"
+  integrity sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
 
 "@types/q@^1.5.1":
   version "1.5.4"
@@ -5437,6 +5442,21 @@ next-tick@~1.0.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
+ngx-clipboard@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-14.0.1.tgz#fe977ee115f50f6a589487f6f99fa5eef5203763"
+  integrity sha512-y6fDrvAso1cbM+VvHgB2kJ3dcQ/EBPol33nLaqqKB1jNO/Kd3l17EHdXNW/oKY0wUKCHk7ZCuiinREgUHEYfXg==
+  dependencies:
+    ngx-window-token ">=4.0.0"
+    tslib "^2.0.0"
+
+ngx-window-token@>=4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-window-token/-/ngx-window-token-4.0.0.tgz#8d8553d193f0515eb28f04ccf2c598fbe6abaa34"
+  integrity sha512-z6tS3UQoKULdABWHpE57l1xtoxFFzlwLe1n+nu9+xzCZUdSvkGqhb5dSje4NOVhA6mMOqzR4SctSBZARwqPPuQ==
+  dependencies:
+    tslib "^2.0.0"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -8177,10 +8197,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vlsm-tools@0.5.7:
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/vlsm-tools/-/vlsm-tools-0.5.7.tgz#17d1d42628764355ed15ddd5216566c9a775ecd3"
-  integrity sha512-QwvxDnSluaU1fe8tJz8sHf4FkxDcsi3oJscbGuii3BWaC6KffBfIkYEH9SOq5x9u2gOz0bRj9fSQ9AF/cAXAvg==
+vlsm-tools@0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/vlsm-tools/-/vlsm-tools-0.6.2.tgz#116827c0095c62517958fb73759bf66b50b0262d"
+  integrity sha512-9bP1llZR/89uma6HGo9KdfRHmTK48W+8Kf1LpGW37TkTe9kCil85r/2KHmgFo5KjeAcXwWE2/ijfNeWMWzX4UA==
   dependencies:
     "@types/jsbn" "^1.2.29"
     ip-address "^7.0.1"

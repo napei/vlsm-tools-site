@@ -1,12 +1,16 @@
 <section>
   <h1>IPv4 Subnetting</h1>
   <hr />
-
+  <p>
+    Notice: This site is still under development, so some things may not work correctly. If you are having any issues, or would like to file a bug
+    report/feature request, you can do so here
+    <a href="https://github.com/napei/vlsm-tools/issues" target="_blank" rel="noopener">https://github.com/napei/vlsm-tools/issues</a>
+  </p>
   <div class="row">
     <div class="col-lg-6 mb-1 mb-lg-0">
       <form [formGroup]="requirementsForm">
         <div class="card mb-1">
-          <h5 class="card-header">Major Network (slash notation)</h5>
+          <h5 class="card-header">Major Network (CIDR slash notation)</h5>
           <div class="card-body">
             <input
               type="text"
@@ -57,7 +61,7 @@
     </div>
 
     <div class="col-lg-6">
-      <div class="card">
+      <div class="card mb-1">
         <h5 class="card-header">Statistics</h5>
         <div class="card-body">
           <div class="row">
@@ -74,6 +78,18 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="card">
+        <h5 class="card-header">Import/Export Subnet</h5>
+        <div class="card-body">
+          <p>
+            Along with storing your settings in the browser, subnet configuration can be exported to a Base64 encoded string, so they can be shared or
+            used again.
+          </p>
+          <button role="button" class="btn btn-success" (click)="importString(importModal)"><fa-icon [icon]="icons.import"></fa-icon> Import</button>
+          <button role="button" class="btn btn-primary" (click)="exportString(exportModal)"><fa-icon [icon]="icons.export"></fa-icon> Export</button>
+          <p *ngIf="importFailed" class="mb-0 text-danger">Sorry, that input was invalid.</p>
         </div>
       </div>
     </div>
@@ -120,3 +136,37 @@
     <h3 class="text-danger">Uh oh. Looks like your major network is too small.</h3>
   </div>
 </section>
+
+<ng-template #importModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Import Subnet</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label class="form-label" for="importTextInput">Paste your subnet string</label>
+      <textarea #importTextInput id="importTextInput" placeholder="Paste here" class="form-control" rows="5"></textarea>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close(importTextInput.value)">Import</button>
+  </div>
+</ng-template>
+
+<ng-template #exportModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Export Subnet</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label class="form-label" for="exportTextInput">Copy your subnet string</label>
+      <textarea readonly #exportTextInput id="exportTextInput" class="form-control" rows="5">{{ modalExportString }}</textarea>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="copyExportString()">
+      <fa-icon [class.text-success]="showCopyComplete" [icon]="showCopyComplete ? icons.check : icons.copy"></fa-icon> Copy to Clipboard
+    </button>
+  </div>
+</ng-template>

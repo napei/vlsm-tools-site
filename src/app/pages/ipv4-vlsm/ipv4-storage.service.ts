@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 import { BehaviorSubject } from 'rxjs';
-import { SubnetRequirements } from 'vlsm-tools';
+import { ParseIPv4Address, SubnetRequirements } from 'vlsm-tools';
 
 export function isSubnetRequirementsValid(r: SubnetRequirements): boolean {
   return r.label && r.label.length > 0 && r.size && r.size > 0;
@@ -45,24 +45,60 @@ export class Iv4Settings {
 
   // Decodes a base64 string to a class.
   public static decode(data: string): Iv4Settings {
+    /**
+     * Things to check
+     *
+     * Should contain '|'
+     * Should start with a valid unix time
+     * Should have a major network
+     */
+    // Decode incoming base64
     const decoded = atob(data);
+    if (decoded.indexOf('|') === -1) {
+      throw 'Input string does not contain pipe delimiter';
+    }
+
     const parts = decoded.split('|');
-    if (parts.length < 1) return null;
-    const modified: Date = fromUnixTime(parseInt(parts[0]));
+    if (parts.length < 1) {
+      throw 'Not enough parts to decode';
+    }
+
+    let datePart: number;
+
+    try {
+      datePart = parseInt(parts[0]);
+    } catch (e) {
+      throw 'Unable to parse int';
+    }
+
+    let modifiedDate: Date;
+    try {
+      modifiedDate = fromUnixTime(datePart);
+    } catch (e) {
+      throw 'Invalid date format';
+    }
+
     const majorNetwork: string = decodeURIComponent(parts[1]);
+    if (!ParseIPv4Address(majorNetwork)) throw 'Invalid major address';
     // Remove first two parts
     parts.shift();
     parts.shift();
-    // Requirements
-    const requirements: SubnetRequirements[] = parts.map((r: string) => {
-      const sub: string[] = r.split(':');
-      const label: string = decodeURIComponent(sub[0]);
-      const size: number = parseInt(sub[1]);
-      return { label, size };
-    });
-
+    let requirements: SubnetRequirements[];
+    if (parts.length > 0) {
+      // Requirements
+      requirements = parts.map((r: string) => {
+        try {
+          const sub: string[] = r.split(':');
+          const label: string = decodeURIComponent(sub[0]);
+          const size: number = parseInt(sub[1]);
+          return { label, size };
+        } catch (e) {
+          throw 'Error while parsing requirements';
+        }
+      });
+    }
     let out = new Iv4Settings();
-    out.modified = modified;
+    out.modified = modifiedDate;
     out.formData = { majorNetwork, requirements };
 
     return out;
