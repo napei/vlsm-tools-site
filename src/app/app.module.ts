@@ -5,10 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Angulartics2Module } from 'angulartics2';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, Angulartics2Module.forRoot(), BrowserAnimationsModule],
+  imports: [BrowserModule, SharedModule, CoreModule, AppRoutingModule, Angulartics2Module.forRoot(), BrowserAnimationsModule],
   providers: [],
   bootstrap: [AppComponent],
 })
