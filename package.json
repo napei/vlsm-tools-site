@@ -34,7 +34,7 @@
     "ngx-clipboard": "^14.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "vlsm-tools": "0.6.2",
+    "vlsm-tools": "0.7.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

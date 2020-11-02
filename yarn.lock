@@ -1297,11 +1297,6 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/jsbn@^1.2.29":
-  version "1.2.29"
-  resolved "https://registry.yarnpkg.com/@types/jsbn/-/jsbn-1.2.29.tgz#28229bc0262c704a1506c3ed69a7d7e115bd7832"
-  integrity sha512-2dVz9LTEGWVj9Ov9zaDnpvqHFV+W4bXtU0EUEGAzWfdRNO3dlUuosdHpENI6/oQW+Kejn0hAjk6P/czs9h/hvg==
-
 "@types/json-schema@^7.0.5":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
@@ -4764,7 +4759,7 @@ js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-jsbn@1.1.0:
+jsbn@1.1.0, jsbn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-1.1.0.tgz#b01307cb29b618a1ed26ec79e911f803c4da0040"
   integrity sha1-sBMHyym2GKHtJux56RH4A8TaAEA=
@@ -8197,13 +8192,13 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vlsm-tools@0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/vlsm-tools/-/vlsm-tools-0.6.2.tgz#116827c0095c62517958fb73759bf66b50b0262d"
-  integrity sha512-9bP1llZR/89uma6HGo9KdfRHmTK48W+8Kf1LpGW37TkTe9kCil85r/2KHmgFo5KjeAcXwWE2/ijfNeWMWzX4UA==
+vlsm-tools@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/vlsm-tools/-/vlsm-tools-0.7.0.tgz#908693f18575e32ca6f0e80795fe2b673ef3dc5c"
+  integrity sha512-VPHBZY/pBh3mt6IGOwu5j3NtKxvB7QiSGed+3RfJHNu846uBU+aWD7MRG4unoiQtRtfRtoz8VsR+IsB3ChE2Vg==
   dependencies:
-    "@types/jsbn" "^1.2.29"
     ip-address "^7.0.1"
+    jsbn "^1.1.0"
 
 vm-browserify@^1.0.1:
   version "1.1.2"
