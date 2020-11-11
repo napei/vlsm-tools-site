@@ -29,7 +29,7 @@
     "@ngneat/reactive-forms": "^1.4.2",
     "@swimlane/ngx-charts": "^16.0.0",
     "angulartics2": "^10.0.0",
-    "bootstrap": "^5.0.0-alpha2",
+    "bootstrap": "^5.0.0-alpha3",
     "date-fns": "^2.16.1",
     "ngx-clipboard": "^14.0.1",
     "rxjs": "~6.6.0",
