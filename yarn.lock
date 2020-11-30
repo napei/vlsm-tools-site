@@ -1196,10 +1196,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@ngneat/reactive-forms@^1.4.2":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@ngneat/reactive-forms/-/reactive-forms-1.4.3.tgz#3195d74dceddc1b34e2ee1ae7276de9010fb10fa"
-  integrity sha512-VbZ5lQBNgNIIFDTVxlDn6P2V1XGeuWw8JybGNwEwCm2s3JyhcMAbKLcEMfY98iMJYszh/153AYCwrQQuUFxLUg==
+"@ngneat/reactive-forms@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@ngneat/reactive-forms/-/reactive-forms-1.5.0.tgz#10142125e3bdb7edf7141b554883f0177a747c95"
+  integrity sha512-BZaZb/JE2mSP4MtbsGbstdXLbcybf+8j68f4qXBKs9IPXmsDoWkyoHgPsG3bNXNG2dLh6HUuWTGoCfUWizO3cA==
   dependencies:
     "@phenomnomnominal/tsquery" "4.1.0"
     tslib "^2.0.0"
