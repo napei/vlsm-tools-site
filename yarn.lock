@@ -8927,7 +8927,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vlsm-tools@^0.7.0:
+vlsm-tools@0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/vlsm-tools/-/vlsm-tools-0.7.0.tgz#908693f18575e32ca6f0e80795fe2b673ef3dc5c"
   integrity sha512-VPHBZY/pBh3mt6IGOwu5j3NtKxvB7QiSGed+3RfJHNu846uBU+aWD7MRG4unoiQtRtfRtoz8VsR+IsB3ChE2Vg==
