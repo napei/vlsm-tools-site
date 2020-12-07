@@ -115,12 +115,25 @@ export class Ipv4StorageService {
   private loadStorage(): Iv4Settings {
     const storageItem = STORAGE_METHOD.getItem(STORAGE_KEY);
     if (!storageItem) {
-      const newSettings = new Iv4Settings();
-      this.saveStorage(newSettings);
-      return newSettings;
+      const newS = this.newSettings();
+      this.saveStorage(newS);
+      return newS;
     }
-    const item = Iv4Settings.decode(storageItem);
-    return item;
+
+    try {
+      const item = Iv4Settings.decode(storageItem);
+      return item;
+    } catch (error) {
+      console.error(error);
+      const newS = this.newSettings();
+      this.saveStorage(newS);
+      return newS;
+    }
+  }
+
+  private newSettings(): Iv4Settings {
+    const newSettings = new Iv4Settings();
+    return newSettings;
   }
 
   private saveStorage(v: Iv4Settings) {
