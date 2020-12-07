@@ -1,0 +1,23 @@
+name: Deploy to test preview on PR
+'on': pull_request
+jobs:
+  build_and_preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_VLSM_TOOLS }}'
+          target: test
+          expiry: 30d
+        env:
+          FIREBASE_CLI_PREVIEWS: hostingchannels

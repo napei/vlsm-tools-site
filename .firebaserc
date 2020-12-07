@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "vlsm-tools"
+  },
+  "targets": {
+    "vlsm-tools": {
+      "hosting": {
+        "test": [
+          "test-vlsm-tools"
+        ],
+        "production": [
+          "vlsm-tools"
+        ]
+      }
+    }
   }
 }
