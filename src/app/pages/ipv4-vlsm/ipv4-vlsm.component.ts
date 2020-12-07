@@ -10,6 +10,7 @@ import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-
 import { ClipboardService } from 'ngx-clipboard';
 
 const DEFAULT_NETWORK = '192.168.1.0/24';
+// eslint-disable-next-line max-len
 const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([1-9]|[1-2][0-9]|3[0-2])$/;
 
 @Component({
@@ -20,12 +21,29 @@ const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|
 export class Ipv4VlsmComponent implements OnInit {
   private _settings: BehaviorSubject<Iv4Settings> = new BehaviorSubject<Iv4Settings>(new Iv4Settings());
   public icons = { plus: faPlus, cross: faTimes, undo: faUndoAlt, import: faFileImport, export: faFileExport, copy: faCopy, check: faCheck };
+  public importFailed = false;
 
+  public modalExportString = '';
+  public showCopyComplete = false;
   public chartData: { name: string; value: number }[];
 
   public get settings$() {
     return this._settings.asObservable();
   }
+
+  public requirementsForm: FormGroup<Iv4RequirementsForm> = new FormGroup<Iv4RequirementsForm>({
+    majorNetwork: new FormControl<string>(DEFAULT_NETWORK, {
+      validators: [Validators.required, Validators.pattern(IP_REGEX)],
+      updateOn: 'change',
+    }),
+    requirements: new FormArray<FormGroup<SubnetRequirements>>([
+      this.createRequirement(),
+      this.createRequirement(),
+      this.createRequirement(),
+      this.createRequirement(),
+    ]),
+  });
+
   constructor(private _storage: Ipv4StorageService, private modalService: NgbModal, private _clipboardService: ClipboardService) {}
   public network: IPv4Network;
 
@@ -80,19 +98,6 @@ export class Ipv4VlsmComponent implements OnInit {
     console.log(d);
   }
 
-  public requirementsForm: FormGroup<Iv4RequirementsForm> = new FormGroup<Iv4RequirementsForm>({
-    majorNetwork: new FormControl<string>(DEFAULT_NETWORK, {
-      validators: [Validators.required, Validators.pattern(IP_REGEX)],
-      updateOn: 'change',
-    }),
-    requirements: new FormArray<FormGroup<SubnetRequirements>>([
-      this.createRequirement(),
-      this.createRequirement(),
-      this.createRequirement(),
-      this.createRequirement(),
-    ]),
-  });
-
   public hasRequiredError(c: AbstractControl): boolean {
     return c.touched && c.errors?.required;
   }
@@ -124,8 +129,6 @@ export class Ipv4VlsmComponent implements OnInit {
     this.chartData = [];
   }
 
-  public importFailed: boolean = false;
-
   public importString(content: TemplateRef<NgbActiveModal>): void {
     this.modalService.open(content, { size: 'lg' }).result.then(
       (closedReason: string) => {
@@ -147,14 +150,11 @@ export class Ipv4VlsmComponent implements OnInit {
     );
   }
 
-  public modalExportString = '';
-
   public exportString(content: TemplateRef<NgbActiveModal>): void {
     this.modalExportString = this._settings.value.encode();
     this.modalService.open(content, { size: 'lg' });
   }
 
-  public showCopyComplete = false;
   public copyExportString(): void {
     this._clipboardService.copy(this.modalExportString);
     this.showCopyComplete = true;
@@ -181,7 +181,7 @@ export class Ipv4VlsmComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const loadedData = this._storage.currentSettings;
 
     this.loadData(loadedData);

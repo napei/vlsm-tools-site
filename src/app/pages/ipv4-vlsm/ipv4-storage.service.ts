@@ -19,31 +19,6 @@ export class Iv4Settings {
     this.modified = new Date();
   }
 
-  // Returns base64 encoded representaiton of the class
-  // Custom data format to save space
-  // unixTimestamp|majorNetwork|label:size|label:size...
-  public encode(): string {
-    let output: any[] = [];
-    const dateString = getUnixTime(this.modified);
-    output.push(dateString);
-    if (this.formData) {
-      const majorNetwork = encodeURIComponent(this.formData.majorNetwork);
-      const reqs = this.formData.requirements
-        .filter((r) => {
-          return isSubnetRequirementsValid(r);
-        })
-        .map((r) => {
-          return `${encodeURIComponent(r.label)}:${r.size}`;
-        });
-
-      if (majorNetwork) output.push(majorNetwork);
-      if (reqs) output.push(...reqs);
-    }
-
-    return btoa(output.join('|'));
-  }
-
-  // Decodes a base64 string to a class.
   public static decode(data: string): Iv4Settings {
     /**
      * Things to check
@@ -103,6 +78,32 @@ export class Iv4Settings {
 
     return out;
   }
+
+  // Returns base64 encoded representaiton of the class
+  // Custom data format to save space
+  // unixTimestamp|majorNetwork|label:size|label:size...
+  public encode(): string {
+    let output: any[] = [];
+    const dateString = getUnixTime(this.modified);
+    output.push(dateString);
+    if (this.formData) {
+      const majorNetwork = encodeURIComponent(this.formData.majorNetwork);
+      const reqs = this.formData.requirements
+        .filter((r) => {
+          return isSubnetRequirementsValid(r);
+        })
+        .map((r) => {
+          return `${encodeURIComponent(r.label)}:${r.size}`;
+        });
+
+      if (majorNetwork) output.push(majorNetwork);
+      if (reqs) output.push(...reqs);
+    }
+
+    return btoa(output.join('|'));
+  }
+
+  // Decodes a base64 string to a class.
 }
 
 const STORAGE_METHOD = localStorage;

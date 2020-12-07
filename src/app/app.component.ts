@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
 
 @Component({
