@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { fromUnixTime, getUnixTime } from 'date-fns';
-import { BehaviorSubject } from 'rxjs';
-import { ParseIPv4Address, SubnetRequirements } from 'vlsm-tools';
+import { ParseIPv4Address, IPv4SubnetRequirements } from 'vlsm-tools';
 
-export function isSubnetRequirementsValid(r: SubnetRequirements): boolean {
+export function isSubnetRequirementsValid(r: IPv4SubnetRequirements): boolean {
   return r.label && r.label.length > 0 && r.size && r.size > 0;
 }
 export interface Iv4RequirementsForm {
   majorNetwork: string;
-  requirements: SubnetRequirements[];
+  requirements: IPv4SubnetRequirements[];
 }
 
 export class Iv4Settings {
@@ -58,7 +57,7 @@ export class Iv4Settings {
     // Remove first two parts
     parts.shift();
     parts.shift();
-    let requirements: SubnetRequirements[];
+    let requirements: IPv4SubnetRequirements[];
     if (parts.length > 0) {
       // Requirements
       requirements = parts.map((r: string) => {

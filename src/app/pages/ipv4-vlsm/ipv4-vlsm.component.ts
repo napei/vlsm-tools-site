@@ -1,12 +1,12 @@
-import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { IPv4Network, SubnetRequirements } from 'vlsm-tools';
+import { IPv4Network, IPv4SubnetRequirements } from 'vlsm-tools';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Ipv4StorageService, isSubnetRequirementsValid, Iv4RequirementsForm, Iv4Settings } from './ipv4-storage.service';
-import { faCheck, faCopy, faFileExport, faFileImport, faPlus, faSave, faTimes, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCopy, faFileExport, faFileImport, faPlus, faTimes, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClipboardService } from 'ngx-clipboard';
 
 const DEFAULT_NETWORK = '192.168.1.0/24';
@@ -36,7 +36,7 @@ export class Ipv4VlsmComponent implements OnInit {
       validators: [Validators.required, Validators.pattern(IP_REGEX)],
       updateOn: 'change',
     }),
-    requirements: new FormArray<FormGroup<SubnetRequirements>>([
+    requirements: new FormArray<FormGroup<IPv4SubnetRequirements>>([
       this.createRequirement(),
       this.createRequirement(),
       this.createRequirement(),
@@ -52,8 +52,8 @@ export class Ipv4VlsmComponent implements OnInit {
     return this._hasError.asObservable();
   }
 
-  public createRequirement(): FormGroup<SubnetRequirements> {
-    return new FormGroup<SubnetRequirements>({
+  public createRequirement(): FormGroup<IPv4SubnetRequirements> {
+    return new FormGroup<IPv4SubnetRequirements>({
       label: new FormControl<string>(''),
       size: new FormControl<number>(null, [Validators.min(0)]),
     });
@@ -110,8 +110,8 @@ export class Ipv4VlsmComponent implements OnInit {
     return c.touched && c.errors?.min;
   }
 
-  public get reqs(): FormArray<FormGroup<SubnetRequirements>> {
-    return this.requirementsForm.controls.requirements as FormArray<FormGroup<SubnetRequirements>>;
+  public get reqs(): FormArray<FormGroup<IPv4SubnetRequirements>> {
+    return this.requirementsForm.controls.requirements as FormArray<FormGroup<IPv4SubnetRequirements>>;
   }
 
   public get f() {
@@ -120,7 +120,7 @@ export class Ipv4VlsmComponent implements OnInit {
 
   public reset(): void {
     this.requirementsForm.reset({ majorNetwork: DEFAULT_NETWORK });
-    (this.requirementsForm.controls.requirements as FormArray<FormGroup<SubnetRequirements>>) = new FormArray<FormGroup<SubnetRequirements>>([
+    (this.requirementsForm.controls.requirements as FormArray<FormGroup<IPv4SubnetRequirements>>) = new FormArray<FormGroup<IPv4SubnetRequirements>>([
       this.createRequirement(),
       this.createRequirement(),
       this.createRequirement(),
@@ -146,7 +146,7 @@ export class Ipv4VlsmComponent implements OnInit {
 
         if (data) this.loadData(data);
       },
-      (dismissedReason) => {}
+      () => {}
     );
   }
 
