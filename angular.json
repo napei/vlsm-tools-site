@@ -54,7 +54,6 @@
           },
           "configurations": {
             "production": {
-              "aot": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -67,6 +66,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": true,
+              "commonChunk": true,
               "buildOptimizer": true,
               "budgets": [
                 {
@@ -86,13 +86,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "vlsm-tools-site:build",
-            "aot": true
+            "browserTarget": "vlsm-tools-site:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "vlsm-tools-site:build:production",
-              "aot": true
+              "browserTarget": "vlsm-tools-site:build:production"
             }
           }
         },
