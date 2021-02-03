@@ -1989,6 +1989,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/prettier@npm:^2":
+  version: 2.1.6
+  resolution: "@types/prettier@npm:2.1.6"
+  checksum: c78a6406b0b0d167c3285c84ca63308028517bc772b16960d959ae0ab8947f58c33aac4ba4485ac878f114be230764f7d5582a43115727ba68e5fb59360d5f37
+  languageName: node
+  linkType: hard
+
 "@types/q@npm:^1.5.1":
   version: 1.5.4
   resolution: "@types/q@npm:1.5.4"
@@ -9580,6 +9587,15 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"prettier@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "prettier@npm:2.2.1"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 92c6c9f4b87eba1f28466edee57dd18c80d00b858edda77d46d1950d20e6e302b68ee255fc91133ba931e63c4577b5ae30da194d9626a8f3c0177778b91bf056
+  languageName: node
+  linkType: hard
+
 "pretty-bytes@npm:^5.3.0":
   version: 5.5.0
   resolution: "pretty-bytes@npm:5.5.0"
@@ -12100,6 +12116,7 @@ typescript@4.1.3:
     "@ngneat/reactive-forms": 1.6.0
     "@swimlane/ngx-charts": 17.0.0
     "@types/node": 14.14.22
+    "@types/prettier": ^2
     "@typescript-eslint/eslint-plugin": 4.14.2
     "@typescript-eslint/parser": 4.14.2
     angulartics2: 10.0.0
@@ -12110,6 +12127,7 @@ typescript@4.1.3:
     eslint-plugin-jsdoc: 31.6.0
     eslint-plugin-prefer-arrow: 1.2.3
     ngx-clipboard: 14.0.1
+    prettier: ^2.2.1
     rxjs: 6.6.3
     ts-node: 9.1.1
     tslib: 2.1.0

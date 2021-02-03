@@ -2,9 +2,15 @@
   <h1>IPv4 Subnetting</h1>
   <hr />
   <p>
-    Notice: This site is still under development, so some things may not work correctly. If you are having any issues, or would like to file a bug
-    report/feature request, you can do so here
-    <a href="https://github.com/napei/vlsm-tools-site/issues" target="_blank" rel="noopener">https://github.com/napei/vlsm-tools-site/issues</a>
+    Notice: This site is still under development, so some things may not work correctly. If you are having any issues, or would like to file
+    a bug report/feature request, you can do so here
+    <a href="https://github.com/napei/vlsm-tools-site/issues" target="_blank" rel="noopener"
+      >https://github.com/napei/vlsm-tools-site/issues</a
+    >
+  </p>
+  <p>
+    If something isn't working, you can
+    <button class="btn btn-sm btn-danger" type="button" (click)="hardReset()">reset everything</button>
   </p>
   <div class="row">
     <div class="col-lg-6 mb-1 mb-lg-0">
@@ -35,25 +41,26 @@
                   </div>
                 </div>
                 <div class="col">
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="Size"
-                    class="form-control"
-                    [class.is-invalid]="hasMinError(req.controls.size)"
-                    formControlName="size"
-                  />
-                  <small class="invalid-feedback">Must be positive</small>
-                  <small class="invalid-feedback">Invalid</small>
-                </div>
-                <div class="col-auto">
-                  <button class="btn btn-danger" (click)="deleteRequirement(i)"><fa-icon [icon]="icons.cross"></fa-icon></button>
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="Size"
+                      class="form-control"
+                      [class.is-invalid]="hasMinError(req.controls.size)"
+                      formControlName="size"
+                    />
+                    <button class="btn btn-danger" [disabled]="reqs.controls.length < 2" (click)="deleteRequirement(i)">
+                      <fa-icon [icon]="icons.cross"></fa-icon>
+                    </button>
+                    <small class="invalid-feedback">Must be positive</small>
+                  </div>
                 </div>
               </div>
             </ng-container>
             <div>
               <button class="btn btn-success" (click)="addNewRequirement()"><fa-icon [icon]="icons.plus"></fa-icon> Add</button>
-              <button class="btn btn-danger float-end" (click)="reset()"><fa-icon [icon]="icons.undo"></fa-icon> Reset</button>
+              <button class="btn btn-danger float-end" (click)="resetRequirements()"><fa-icon [icon]="icons.undo"></fa-icon> Reset</button>
             </div>
           </div>
         </div>
@@ -84,18 +91,22 @@
         <h5 class="card-header">Import/Export Subnet</h5>
         <div class="card-body">
           <p>
-            Along with storing your settings in the browser, subnet configuration can be exported to a Base64 encoded string, so they can be shared or
-            used again.
+            Along with storing your settings in the browser, subnet configuration can be exported to a Base64 encoded string, so they can be
+            shared or used again.
           </p>
-          <button role="button" class="btn btn-success" (click)="importString(importModal)"><fa-icon [icon]="icons.import"></fa-icon> Import</button>
-          <button role="button" class="btn btn-primary" (click)="exportString(exportModal)"><fa-icon [icon]="icons.export"></fa-icon> Export</button>
+          <button role="button" class="btn btn-success" (click)="importString(importModal)">
+            <fa-icon [icon]="icons.import"></fa-icon> Import
+          </button>
+          <button role="button" class="btn btn-primary" (click)="exportString(exportModal)">
+            <fa-icon [icon]="icons.export"></fa-icon> Export
+          </button>
           <p *ngIf="importFailed" class="mb-0 text-danger">Sorry, that input was invalid.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="(hasError | async) === false && requirementsForm.valid">
+  <div *ngIf="(hasError$ | async) === false && requirementsForm.valid">
     <small class="float-end">Last Modified: {{ (settings$ | async).modified | date: 'medium' }}</small>
     <table class="table table-striped table-hover mt-4">
       <thead>
@@ -132,7 +143,7 @@
     <small>Your subnetting settings will be stored in your browser's local storage.</small>
   </div>
 
-  <div *ngIf="hasError | async">
+  <div *ngIf="hasError$ | async">
     <h3 class="text-danger">Uh oh. Looks like your major network is too small.</h3>
   </div>
 </section>

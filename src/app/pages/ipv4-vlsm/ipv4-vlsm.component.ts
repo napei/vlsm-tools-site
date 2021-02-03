@@ -9,7 +9,7 @@ import { faCheck, faCopy, faFileExport, faFileImport, faPlus, faTimes, faUndoAlt
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClipboardService } from 'ngx-clipboard';
 
-const DEFAULT_NETWORK = '192.168.1.0/24';
+// const DEFAULT_NETWORK = '192.168.1.0/24';
 // eslint-disable-next-line max-len
 const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([1-9]|[1-2][0-9]|3[0-2])$/;
 
@@ -19,8 +19,15 @@ const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|
   styleUrls: ['./ipv4-vlsm.component.scss'],
 })
 export class Ipv4VlsmComponent implements OnInit {
-  private _settings: BehaviorSubject<Iv4Settings> = new BehaviorSubject<Iv4Settings>(new Iv4Settings());
-  public icons = { plus: faPlus, cross: faTimes, undo: faUndoAlt, import: faFileImport, export: faFileExport, copy: faCopy, check: faCheck };
+  public icons = {
+    plus: faPlus,
+    cross: faTimes,
+    undo: faUndoAlt,
+    import: faFileImport,
+    export: faFileExport,
+    copy: faCopy,
+    check: faCheck,
+  };
   public importFailed = false;
 
   public modalExportString = '';
@@ -28,11 +35,11 @@ export class Ipv4VlsmComponent implements OnInit {
   public chartData: { name: string; value: number }[];
 
   public get settings$() {
-    return this._settings.asObservable();
+    return this.settings.asObservable();
   }
 
   public requirementsForm: FormGroup<Iv4RequirementsForm> = new FormGroup<Iv4RequirementsForm>({
-    majorNetwork: new FormControl<string>(DEFAULT_NETWORK, {
+    majorNetwork: new FormControl<string>(null, {
       validators: [Validators.required, Validators.pattern(IP_REGEX)],
       updateOn: 'change',
     }),
@@ -43,13 +50,36 @@ export class Ipv4VlsmComponent implements OnInit {
       this.createRequirement(),
     ]),
   });
-
-  constructor(private _storage: Ipv4StorageService, private modalService: NgbModal, private _clipboardService: ClipboardService) {}
   public network: IPv4Network;
+  private settings: BehaviorSubject<Iv4Settings> = new BehaviorSubject<Iv4Settings>(new Iv4Settings());
+  private hasError: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
-  private _hasError: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
-  public get hasError(): Observable<boolean> {
-    return this._hasError.asObservable();
+  constructor(private storage: Ipv4StorageService, private modalService: NgbModal, private clipboardService: ClipboardService) {}
+
+  public ngOnInit(): void {
+    const loadedData = this.storage.currentSettings;
+
+    this.loadData(loadedData);
+    this.settings.subscribe((s) => {
+      this.storage.currentSettings = s;
+    });
+
+    this.requirementsForm.value$.subscribe((v: Iv4RequirementsForm) => {
+      if (this.requirementsForm.valid) {
+        this.calculate(v);
+        const newSettings = new Iv4Settings();
+        newSettings.modified = new Date();
+        newSettings.formData = {
+          majorNetwork: v.majorNetwork,
+          requirements: v.requirements,
+        };
+        this.settings.next(newSettings);
+      }
+    });
+  }
+
+  public get hasError$(): Observable<boolean> {
+    return this.hasError.asObservable();
   }
 
   public createRequirement(): FormGroup<IPv4SubnetRequirements> {
@@ -70,32 +100,25 @@ export class Ipv4VlsmComponent implements OnInit {
   }
 
   public calculate(v: Iv4RequirementsForm): void {
-    // console.log(v);
-    const r = v.requirements.filter((rr) => {
-      return isSubnetRequirementsValid(rr);
-    });
+    const r = v.requirements.filter((rr) => isSubnetRequirementsValid(rr));
 
     if (r.length < 1) {
       this.network = null;
-      this._hasError.next(null);
+      this.hasError.next(null);
       return;
     }
 
     try {
       this.network = new IPv4Network(r, v.majorNetwork);
     } catch (e) {
-      console.error(e);
-      this._hasError.next(true);
+      this.hasError.next(true);
       return;
     }
 
-    this._hasError.next(false);
-    let d = this.network.subnets.map((s) => {
-      return { name: s.requirements.label, value: s.networkSize };
-    });
+    this.hasError.next(false);
+    const d = this.network.subnets.map((s) => ({ name: s.requirements.label, value: s.networkSize }));
     d.push({ name: 'Unallocated', value: this.network.unusedSize });
     this.chartData = d;
-    console.log(d);
   }
 
   public hasRequiredError(c: AbstractControl): boolean {
@@ -118,14 +141,17 @@ export class Ipv4VlsmComponent implements OnInit {
     return this.requirementsForm.controls;
   }
 
-  public reset(): void {
-    this.requirementsForm.reset({ majorNetwork: DEFAULT_NETWORK });
-    (this.requirementsForm.controls.requirements as FormArray<FormGroup<IPv4SubnetRequirements>>) = new FormArray<FormGroup<IPv4SubnetRequirements>>([
-      this.createRequirement(),
-      this.createRequirement(),
-      this.createRequirement(),
-      this.createRequirement(),
-    ]);
+  public hardReset(): void {
+    this.storage.clearStorage();
+    this.resetRequirements();
+  }
+
+  public resetRequirements(): void {
+    const blank = new Iv4Settings();
+    (this.requirementsForm.controls.requirements as FormArray<FormGroup<IPv4SubnetRequirements>>) = new FormArray<
+      FormGroup<IPv4SubnetRequirements>
+    >([this.createRequirement(), this.createRequirement(), this.createRequirement(), this.createRequirement()]);
+    this.requirementsForm.patchValue({ requirements: blank.formData.requirements });
     this.chartData = [];
   }
 
@@ -133,9 +159,13 @@ export class Ipv4VlsmComponent implements OnInit {
     this.modalService.open(content, { size: 'lg' }).result.then(
       (closedReason: string) => {
         // Only care if it was closed
-        if (!closedReason) return;
+        if (!closedReason) {
+          return;
+        }
         const res = closedReason.trim();
-        if (res === '') return;
+        if (res === '') {
+          return;
+        }
         let data: Iv4Settings;
         try {
           data = Iv4Settings.decode(res);
@@ -144,19 +174,21 @@ export class Ipv4VlsmComponent implements OnInit {
           return;
         }
 
-        if (data) this.loadData(data);
+        if (data) {
+          this.loadData(data);
+        }
       },
       () => {}
     );
   }
 
   public exportString(content: TemplateRef<NgbActiveModal>): void {
-    this.modalExportString = this._settings.value.encode();
+    this.modalExportString = this.settings.value.encode();
     this.modalService.open(content, { size: 'lg' });
   }
 
   public copyExportString(): void {
-    this._clipboardService.copy(this.modalExportString);
+    this.clipboardService.copy(this.modalExportString);
     this.showCopyComplete = true;
     setTimeout(() => {
       this.showCopyComplete = false;
@@ -164,42 +196,28 @@ export class Ipv4VlsmComponent implements OnInit {
   }
 
   private loadData(loadedData: Iv4Settings) {
-    if (loadedData) {
-      this._settings.next(loadedData);
-      console.log(loadedData);
-      if (loadedData.formData) {
-        console.log(loadedData.formData.requirements.length);
-        if (loadedData.formData.requirements.length > 4) {
-          for (let i = 4; i < loadedData.formData.requirements.length; i++) {
-            this.reqs.push(this.createRequirement());
-          }
-          this.requirementsForm.updateValueAndValidity();
-        }
-
-        this.requirementsForm.patchValue({ majorNetwork: loadedData.formData.majorNetwork, requirements: loadedData.formData.requirements });
-      }
+    if (!loadedData) {
+      this.settings.next(new Iv4Settings());
+      return;
     }
-  }
 
-  public ngOnInit(): void {
-    const loadedData = this._storage.currentSettings;
+    if (!loadedData.formData?.requirements) {
+      loadedData.formData.requirements = [];
+    }
 
-    this.loadData(loadedData);
-    this._settings.subscribe((s) => {
-      this._storage.currentSettings = s;
-    });
-
-    this.requirementsForm.value$.subscribe((v: Iv4RequirementsForm) => {
-      if (this.requirementsForm.valid) {
-        this.calculate(v);
-        const newSettings = new Iv4Settings();
-        newSettings.modified = new Date();
-        newSettings.formData = {
-          majorNetwork: v.majorNetwork,
-          requirements: v.requirements,
-        };
-        this._settings.next(newSettings);
+    if (loadedData.formData.requirements.length > 4) {
+      for (let i = 4; i < loadedData.formData.requirements.length; i++) {
+        this.reqs.push(this.createRequirement());
       }
+      this.requirementsForm.updateValueAndValidity();
+    }
+
+    this.requirementsForm.patchValue({
+      majorNetwork: loadedData.formData.majorNetwork,
+      requirements: loadedData.formData.requirements,
     });
+    this.requirementsForm.updateValueAndValidity();
+
+    this.settings.next(loadedData);
   }
 }

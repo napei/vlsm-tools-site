@@ -4,6 +4,7 @@
 *.zip binary
 *.jpg binary
 *.png binary
+*.ico binary
 # GitHub Linguist Override
 .yarn/* linguist-vendored
 .pnp.js linguist-vendored

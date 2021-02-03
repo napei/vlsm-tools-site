@@ -14,7 +14,15 @@ export const routes: Routes = [{ path: '', component: Ipv4VlsmComponent }];
 
 @NgModule({
   declarations: [Ipv4VlsmComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, FontAwesomeModule, NgxChartsModule, NgbModalModule, ClipboardModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    NgxChartsModule,
+    NgbModalModule,
+    ClipboardModule,
+  ],
   providers: [Ipv4StorageService],
 })
 export class Ipv4VlsmModule {}

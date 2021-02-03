@@ -1,2 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@import url(https://rsms.me/inter/inter.css);
+
+$enable-shadows: true;
+$enable-responsive-font-sizes: true;
+$font-size-root: 15px !default;
+$link-decoration: none !default;
+$link-hover-decoration: underline !default;
+
+$font-family-sans-serif: 'Inter var', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans',
+  sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !default;
+
 @import '~bootstrap/scss/bootstrap';
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

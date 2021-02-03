@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 import { ParseIPv4Address, IPv4SubnetRequirements } from 'vlsm-tools';
 
-export function isSubnetRequirementsValid(r: IPv4SubnetRequirements): boolean {
-  return r.label && r.label.length > 0 && r.size && r.size > 0;
-}
+export const isSubnetRequirementsValid = (r: IPv4SubnetRequirements): boolean => r.label && r.label.length > 0 && r.size && r.size > 0;
 export interface Iv4RequirementsForm {
   majorNetwork: string;
   requirements: IPv4SubnetRequirements[];
@@ -16,6 +14,15 @@ export class Iv4Settings {
 
   constructor() {
     this.modified = new Date();
+    this.formData = {
+      majorNetwork: '192.168.1.0/24',
+      requirements: [
+        { label: '', size: null },
+        { label: '', size: null },
+        { label: '', size: null },
+        { label: '', size: null },
+      ],
+    };
   }
 
   public static decode(data: string): Iv4Settings {
@@ -29,31 +36,33 @@ export class Iv4Settings {
     // Decode incoming base64
     const decoded = atob(data);
     if (decoded.indexOf('|') === -1) {
-      throw 'Input string does not contain pipe delimiter';
+      throw new Error('Input string does not contain pipe delimiter');
     }
 
     const parts = decoded.split('|');
     if (parts.length < 1) {
-      throw 'Not enough parts to decode';
+      throw new Error('Not enough parts to decode');
     }
 
     let datePart: number;
 
     try {
-      datePart = parseInt(parts[0]);
+      datePart = parseInt(parts[0], 10);
     } catch (e) {
-      throw 'Unable to parse int';
+      throw new Error('Unable to parse int');
     }
 
     let modifiedDate: Date;
     try {
       modifiedDate = fromUnixTime(datePart);
     } catch (e) {
-      throw 'Invalid date format';
+      throw new Error('Invalid date format');
     }
 
     const majorNetwork: string = decodeURIComponent(parts[1]);
-    if (!ParseIPv4Address(majorNetwork)) throw 'Invalid major address';
+    if (!ParseIPv4Address(majorNetwork)) {
+      throw new Error('Invalid major address');
+    }
     // Remove first two parts
     parts.shift();
     parts.shift();
@@ -64,14 +73,14 @@ export class Iv4Settings {
         try {
           const sub: string[] = r.split(':');
           const label: string = decodeURIComponent(sub[0]);
-          const size: number = parseInt(sub[1]);
+          const size: number = parseInt(sub[1], 10);
           return { label, size };
         } catch (e) {
-          throw 'Error while parsing requirements';
+          throw new Error('Error while parsing requirements');
         }
       });
     }
-    let out = new Iv4Settings();
+    const out = new Iv4Settings();
     out.modified = modifiedDate;
     out.formData = { majorNetwork, requirements };
 
@@ -82,21 +91,21 @@ export class Iv4Settings {
   // Custom data format to save space
   // unixTimestamp|majorNetwork|label:size|label:size...
   public encode(): string {
-    let output: any[] = [];
+    const output: any[] = [];
     const dateString = getUnixTime(this.modified);
     output.push(dateString);
     if (this.formData) {
       const majorNetwork = encodeURIComponent(this.formData.majorNetwork);
       const reqs = this.formData.requirements
-        .filter((r) => {
-          return isSubnetRequirementsValid(r);
-        })
-        .map((r) => {
-          return `${encodeURIComponent(r.label)}:${r.size}`;
-        });
+        .filter((r) => isSubnetRequirementsValid(r))
+        .map((r) => `${encodeURIComponent(r.label)}:${r.size}`);
 
-      if (majorNetwork) output.push(majorNetwork);
-      if (reqs) output.push(...reqs);
+      if (majorNetwork) {
+        output.push(majorNetwork);
+      }
+      if (reqs) {
+        output.push(...reqs);
+      }
     }
 
     return btoa(output.join('|'));
@@ -112,6 +121,10 @@ const STORAGE_KEY = 'ipv4';
 export class Ipv4StorageService {
   constructor() {}
 
+  public clearStorage(): void {
+    STORAGE_METHOD.removeItem(STORAGE_KEY);
+  }
+
   private loadStorage(): Iv4Settings {
     const storageItem = STORAGE_METHOD.getItem(STORAGE_KEY);
     if (!storageItem) {
@@ -124,7 +137,6 @@ export class Ipv4StorageService {
       const item = Iv4Settings.decode(storageItem);
       return item;
     } catch (error) {
-      console.error(error);
       const newS = this.newSettings();
       this.saveStorage(newS);
       return newS;
