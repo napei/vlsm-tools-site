@@ -156,14 +156,13 @@ export class Ipv4VlsmComponent implements OnInit {
         formData: { majorNetwork },
       } = await this.storage.get().toPromise();
       newSettings.formData.majorNetwork = majorNetwork;
-      this.requirementsForm.patchValue({ majorNetwork });
     }
 
     const controls = new FormArray<FormGroup<IPv4SubnetRequirements>>(
       newSettings.formData.requirements.map(() => this.createRequirement())
     );
     this.requirementsForm.registerControl('requirements', controls);
-    this.requirementsForm.patchValue({ requirements: newSettings.formData.requirements });
+    this.requirementsForm.patchValue({ majorNetwork: newSettings.formData.majorNetwork, requirements: newSettings.formData.requirements });
     this.chartData = [];
     this.storage.set(newSettings);
     this.toast.success('Requirements reset');
