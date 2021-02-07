@@ -156,6 +156,7 @@ export class Ipv4VlsmComponent implements OnInit {
         formData: { majorNetwork },
       } = await this.storage.get().toPromise();
       newSettings.formData.majorNetwork = majorNetwork;
+      this.requirementsForm.patchValue({ majorNetwork });
     }
 
     const controls = new FormArray<FormGroup<IPv4SubnetRequirements>>(
