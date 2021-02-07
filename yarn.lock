@@ -1776,6 +1776,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ngneat/hot-toast@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@ngneat/hot-toast@npm:1.0.4"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    "@angular/common": ^8.2.14
+    "@angular/core": ^8.2.14
+    "@ngneat/overview": ^1.0.0
+  checksum: c06f5a652984d521413563d7e6914124e19ec8f312f63df51f139aa131e2867b13d6ed5c27c2b7d43d4329cd607d8e68cc6eca9f4e378572fd2e1c8d6224e353
+  languageName: node
+  linkType: hard
+
+"@ngneat/overview@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@ngneat/overview@npm:1.0.0"
+  dependencies:
+    tslib: ^2.0.0
+  checksum: 038c41fd22ec33fa44d3b457a9c93048955398dd00f15747017afff1106166d3caa824c71fd28bdc07e60782f1d6bbd4b5fc003fe3066bedb086402290f6ef5e
+  languageName: node
+  linkType: hard
+
 "@ngneat/reactive-forms@npm:1.6.0":
   version: 1.6.0
   resolution: "@ngneat/reactive-forms@npm:1.6.0"
@@ -1797,6 +1819,19 @@ __metadata:
     typescript: ~4.0.0 || ~4.1.0
     webpack: ^4.0.0
   checksum: ec6efd6f4f475df0d761051f9ba4aa28c6a306ffffd950ce0a6d478210f23dfe20d674ab7865cca1237db0d7352686f04e66cce8688ae35c0e90b1703df9e769
+  languageName: node
+  linkType: hard
+
+"@ngx-pwa/local-storage@npm:11.1.0":
+  version: 11.1.0
+  resolution: "@ngx-pwa/local-storage@npm:11.1.0"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    "@angular/common": ^11.0.0
+    "@angular/core": ^11.0.0
+    rxjs: ^6.5.3
+  checksum: c6821a84e49ae20ff9448ed39b5179db7d2bcb7390a5ed6b64117504f83c529c0e80c1da6ae64fd916f90dbe01c3816a87e19a78f260180150abd50d76a7b19d
   languageName: node
   linkType: hard
 
@@ -12184,7 +12219,10 @@ typescript@4.1.3:
     "@fortawesome/free-regular-svg-icons": 5.15.2
     "@fortawesome/free-solid-svg-icons": 5.15.2
     "@ng-bootstrap/ng-bootstrap": 9.0.2
+    "@ngneat/hot-toast": 1.0.4
+    "@ngneat/overview": 1.0.0
     "@ngneat/reactive-forms": 1.6.0
+    "@ngx-pwa/local-storage": 11.1.0
     "@swimlane/ngx-charts": 17.0.0
     "@types/node": 14.14.25
     "@types/prettier": 2.2.0

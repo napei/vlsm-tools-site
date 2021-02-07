@@ -5,9 +5,9 @@ import { Ipv4VlsmComponent } from './ipv4-vlsm.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { Ipv4StorageService } from './ipv4-storage.service';
+import { IPv4StorageService } from './ipv4-storage.service';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlertModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ClipboardModule } from 'ngx-clipboard';
 
 export const routes: Routes = [{ path: '', component: Ipv4VlsmComponent }];
@@ -22,7 +22,8 @@ export const routes: Routes = [{ path: '', component: Ipv4VlsmComponent }];
     NgxChartsModule,
     NgbModalModule,
     ClipboardModule,
+    NgbAlertModule
   ],
-  providers: [Ipv4StorageService],
+  providers: [IPv4StorageService],
 })
 export class Ipv4VlsmModule {}

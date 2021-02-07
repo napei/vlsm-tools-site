@@ -4,3 +4,9 @@
     width: 4rem;
   }
 }
+.nav-link {
+  &.active {
+    font-weight: 600;
+    color: white;
+  }
+}

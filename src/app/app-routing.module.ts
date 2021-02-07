@@ -5,6 +5,11 @@ import { ContainerLayoutComponent } from './shared/layouts/container/container.c
 const routes: Routes = [
   {
     path: '',
+    redirectTo: 'vlsm-v4',
+    pathMatch: 'full',
+  },
+  {
+    path: 'vlsm-v4',
     component: ContainerLayoutComponent,
     children: [
       {
@@ -13,6 +18,13 @@ const routes: Routes = [
       },
     ],
   },
+  {
+    path: '404',
+    component: ContainerLayoutComponent,
+    children: [{ path: '', loadChildren: () => import('./pages/notfound/notfound.module').then((m) => m.NotFoundModule) }],
+  },
+
+  { path: '**', redirectTo: '404' },
 ];
 
 @NgModule({

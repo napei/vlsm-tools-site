@@ -1,17 +1,21 @@
 <section>
   <h1>IPv4 Subnetting</h1>
   <hr />
-  <p>
-    Notice: This site is still under development, so some things may not work correctly. If you are having any issues, or would like to file
-    a bug report/feature request, you can do so here
-    <a href="https://github.com/napei/vlsm-tools-site/issues" target="_blank" rel="noopener"
-      >https://github.com/napei/vlsm-tools-site/issues</a
-    >
-  </p>
-  <p>
-    If something isn't working, you can
-    <button class="btn btn-sm btn-danger" type="button" (click)="hardReset()">reset everything</button>
-  </p>
+
+  <ngb-alert [dismissible]="false" [type]="'info'">
+    <p>
+      Notice: This site is still under development, so some things may not work correctly. If you are having any issues, or would like to
+      file a bug report/feature request, you can do so here
+      <a href="https://github.com/napei/vlsm-tools-site/issues" target="_blank" rel="noopener noreferrer"
+        >https://github.com/napei/vlsm-tools-site/issues</a
+      >
+    </p>
+    <p class="mb-0">
+      If something isn't working, you can
+      <button class="btn btn-sm btn-danger" type="button" (click)="hardReset()">reset everything</button>
+    </p>
+  </ngb-alert>
+
   <div class="row">
     <div class="col-lg-6 mb-1 mb-lg-0">
       <form [formGroup]="requirementsForm">
@@ -91,8 +95,8 @@
         <h5 class="card-header">Import/Export Subnet</h5>
         <div class="card-body">
           <p>
-            Along with storing your settings in the browser, subnet configuration can be exported to a Base64 encoded string, so they can be
-            shared or used again.
+            As well as storing your subnetting configuration in the browser's storage, you can also export your configuration to a special
+            string, which you can then share with others, or save for later.
           </p>
           <button role="button" class="btn btn-success" (click)="importString(importModal)">
             <fa-icon [icon]="icons.import"></fa-icon> Import
@@ -100,7 +104,6 @@
           <button role="button" class="btn btn-primary" (click)="exportString(exportModal)">
             <fa-icon [icon]="icons.export"></fa-icon> Export
           </button>
-          <p *ngIf="importFailed" class="mb-0 text-danger">Sorry, that input was invalid.</p>
         </div>
       </div>
     </div>
@@ -140,7 +143,7 @@
         </ng-container>
       </tbody>
     </table>
-    <small>Your subnetting settings will be stored in your browser's local storage.</small>
+    <small>Your subnetting settings will be stored in your browser's storage.</small>
   </div>
 
   <div *ngIf="hasError$ | async">
@@ -177,7 +180,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="copyExportString()">
-      <fa-icon [class.text-success]="showCopyComplete" [icon]="showCopyComplete ? icons.check : icons.copy"></fa-icon> Copy to Clipboard
+      <fa-icon [icon]="icons.copy"></fa-icon> Copy to Clipboard
     </button>
   </div>
 </ng-template>

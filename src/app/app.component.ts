@@ -7,7 +7,7 @@ import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
   styles: [],
 })
 export class AppComponent {
-  constructor(private angulartics: Angulartics2GoogleGlobalSiteTag) {
-    this.angulartics.startTracking();
+  constructor(private tracking: Angulartics2GoogleGlobalSiteTag) {
+    this.tracking.startTracking();
   }
 }

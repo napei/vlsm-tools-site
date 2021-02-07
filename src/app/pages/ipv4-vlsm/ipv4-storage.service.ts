@@ -1,5 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HotToastService } from '@ngneat/hot-toast';
+import { StorageMap } from '@ngx-pwa/local-storage';
 import { fromUnixTime, getUnixTime } from 'date-fns';
+import { of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { ParseIPv4Address, IPv4SubnetRequirements } from 'vlsm-tools';
 
 export const isSubnetRequirementsValid = (r: IPv4SubnetRequirements): boolean => r.label && r.label.length > 0 && r.size && r.size > 0;
@@ -25,7 +30,15 @@ export class Iv4Settings {
     };
   }
 
-  public static decode(data: string): Iv4Settings {
+  /**
+   * Decodes a Base64 string created by encoding a class
+   *
+   * @static
+   * @param data Input base64 string
+   * @returns Parsed settings class
+   * @memberof Iv4Settings
+   */
+  public static decodeBase64(data: string): Iv4Settings {
     /**
      * Things to check
      *
@@ -82,15 +95,27 @@ export class Iv4Settings {
     }
     const out = new Iv4Settings();
     out.modified = modifiedDate;
+    if (!requirements) {
+      requirements = [
+        { label: '', size: null },
+        { label: '', size: null },
+        { label: '', size: null },
+        { label: '', size: null },
+      ];
+    }
     out.formData = { majorNetwork, requirements };
 
     return out;
   }
 
-  // Returns base64 encoded representaiton of the class
-  // Custom data format to save space
-  // unixTimestamp|majorNetwork|label:size|label:size...
-  public encode(): string {
+  /**
+   * Encodes the class as a base64 string using a custom format
+   * unixTimestamp|majorNetwork|label:size|label:size...
+   *
+   * @returns Base64 String
+   * @memberof Iv4Settings
+   */
+  public encodeBase64(): string {
     const output: any[] = [];
     const dateString = getUnixTime(this.modified);
     output.push(dateString);
@@ -110,64 +135,47 @@ export class Iv4Settings {
 
     return btoa(output.join('|'));
   }
-
-  // Decodes a base64 string to a class.
 }
 
-const STORAGE_METHOD = localStorage;
-const STORAGE_KEY = 'ipv4';
-
 @Injectable()
-export class Ipv4StorageService {
-  constructor() {}
+export class IPv4StorageService {
+  private key = 'vlsm-v4';
 
-  public clearStorage(): void {
-    STORAGE_METHOD.removeItem(STORAGE_KEY);
-  }
-
-  private loadStorage(): Iv4Settings {
-    const storageItem = STORAGE_METHOD.getItem(STORAGE_KEY);
-    if (!storageItem) {
-      const newS = this.newSettings();
-      this.saveStorage(newS);
-      return newS;
+  private parseMap = map((s: string) => {
+    if (!s) {
+      return new Iv4Settings();
     }
-
     try {
-      const item = Iv4Settings.decode(storageItem);
-      return item;
-    } catch (error) {
-      const newS = this.newSettings();
-      this.saveStorage(newS);
-      return newS;
+      const settings = Iv4Settings.decodeBase64(s);
+      return settings;
+    } catch (e) {
+      this.toast.error('Invalid config detected in browser storage. Please reset.');
+      return null;
     }
+  });
+
+  constructor(private storage: StorageMap, private toast: HotToastService) {}
+
+  public get(): Observable<Iv4Settings | null> {
+    return this.storage.get(this.key, { type: 'string' }).pipe(this.parseMap);
   }
 
-  private newSettings(): Iv4Settings {
-    const newSettings = new Iv4Settings();
-    return newSettings;
+  public set(settings: Iv4Settings): void {
+    const str = settings.encodeBase64();
+    this.storage.set(this.key, str).subscribe({
+      next: () => {},
+      error: (e) => {
+        this.toast.error('Unable to save to browser storage');
+        console.error(e);
+      },
+    });
   }
 
-  private saveStorage(v: Iv4Settings) {
-    const item = v?.encode();
-    if (item) {
-      STORAGE_METHOD.setItem(STORAGE_KEY, item);
-    }
+  public get watch$(): Observable<Iv4Settings> {
+    return this.storage.watch(this.key).pipe(this.parseMap);
   }
 
-  public get currentSettings(): Iv4Settings {
-    return this.loadStorage();
-  }
-
-  public set currentSettings(v: Iv4Settings) {
-    this.saveStorage(v);
-  }
-
-  public get base64Settings(): string {
-    return this.currentSettings.encode();
-  }
-
-  public set base64Settings(s: string) {
-    this.currentSettings = Iv4Settings.decode(s);
+  public delete(): void {
+    this.storage.delete(this.key);
   }
 }

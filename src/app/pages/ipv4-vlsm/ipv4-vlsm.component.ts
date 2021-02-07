@@ -3,15 +3,20 @@ import { Validators } from '@angular/forms';
 import { IPv4Network, IPv4SubnetRequirements } from 'vlsm-tools';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Ipv4StorageService, isSubnetRequirementsValid, Iv4RequirementsForm, Iv4Settings } from './ipv4-storage.service';
+import { IPv4StorageService, isSubnetRequirementsValid, Iv4RequirementsForm, Iv4Settings } from './ipv4-storage.service';
 import { faCheck, faCopy, faFileExport, faFileImport, faPlus, faTimes, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClipboardService } from 'ngx-clipboard';
+import { HotToastService } from '@ngneat/hot-toast';
+import { StorageMap } from '@ngx-pwa/local-storage';
+import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
+import { TitleService } from 'src/app/core/services/title.service';
 
-// const DEFAULT_NETWORK = '192.168.1.0/24';
 // eslint-disable-next-line max-len
 const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([1-9]|[1-2][0-9]|3[0-2])$/;
+
+const storageIndex = 'ipv4';
 
 @Component({
   selector: 'app-ipv4-vlsm',
@@ -26,17 +31,10 @@ export class Ipv4VlsmComponent implements OnInit {
     import: faFileImport,
     export: faFileExport,
     copy: faCopy,
-    check: faCheck,
   };
-  public importFailed = false;
 
   public modalExportString = '';
-  public showCopyComplete = false;
   public chartData: { name: string; value: number }[];
-
-  public get settings$() {
-    return this.settings.asObservable();
-  }
 
   public requirementsForm: FormGroup<Iv4RequirementsForm> = new FormGroup<Iv4RequirementsForm>({
     majorNetwork: new FormControl<string>(null, {
@@ -51,18 +49,22 @@ export class Ipv4VlsmComponent implements OnInit {
     ]),
   });
   public network: IPv4Network;
-  private settings: BehaviorSubject<Iv4Settings> = new BehaviorSubject<Iv4Settings>(new Iv4Settings());
+  public settings$: Observable<Iv4Settings>;
   private hasError: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
-  constructor(private storage: Ipv4StorageService, private modalService: NgbModal, private clipboardService: ClipboardService) {}
+  constructor(
+    private storage: IPv4StorageService,
+    private modalService: NgbModal,
+    private clipboardService: ClipboardService,
+    private toast: HotToastService,
+    private tracking: Angulartics2GoogleGlobalSiteTag,
+    private title: TitleService
+  ) {}
 
-  public ngOnInit(): void {
-    const loadedData = this.storage.currentSettings;
-
-    this.loadData(loadedData);
-    this.settings.subscribe((s) => {
-      this.storage.currentSettings = s;
-    });
+  public async ngOnInit() {
+    this.title.set('IPv4 Subnetting');
+    this.settings$ = this.storage.watch$;
+    this.loadData(await this.storage.get().toPromise());
 
     this.requirementsForm.value$.subscribe((v: Iv4RequirementsForm) => {
       if (this.requirementsForm.valid) {
@@ -73,7 +75,7 @@ export class Ipv4VlsmComponent implements OnInit {
           majorNetwork: v.majorNetwork,
           requirements: v.requirements,
         };
-        this.settings.next(newSettings);
+        this.storage.set(newSettings);
       }
     });
   }
@@ -142,17 +144,27 @@ export class Ipv4VlsmComponent implements OnInit {
   }
 
   public hardReset(): void {
-    this.storage.clearStorage();
+    this.storage.delete();
     this.resetRequirements();
+    this.tracking.eventTrack('hard_reset', { label: 'Hard reset', category: 'vlsm_v4' });
   }
 
-  public resetRequirements(): void {
-    const blank = new Iv4Settings();
-    (this.requirementsForm.controls.requirements as FormArray<FormGroup<IPv4SubnetRequirements>>) = new FormArray<
-      FormGroup<IPv4SubnetRequirements>
-    >([this.createRequirement(), this.createRequirement(), this.createRequirement(), this.createRequirement()]);
-    this.requirementsForm.patchValue({ requirements: blank.formData.requirements });
+  public async resetRequirements() {
+    const newSettings = new Iv4Settings();
+    const {
+      formData: { majorNetwork },
+    } = await this.storage.get().toPromise();
+    newSettings.formData.majorNetwork = majorNetwork;
+
+    const controls = new FormArray<FormGroup<IPv4SubnetRequirements>>(
+      newSettings.formData.requirements.map(() => this.createRequirement())
+    );
+    this.requirementsForm.registerControl('requirements', controls);
+    this.requirementsForm.patchValue({ requirements: newSettings.formData.requirements });
     this.chartData = [];
+    this.storage.set(newSettings);
+    this.toast.success('Requirements reset');
+    this.tracking.eventTrack('req_reset', { label: 'Requirements reset', category: 'vlsm_v4' });
   }
 
   public importString(content: TemplateRef<NgbActiveModal>): void {
@@ -168,56 +180,47 @@ export class Ipv4VlsmComponent implements OnInit {
         }
         let data: Iv4Settings;
         try {
-          data = Iv4Settings.decode(res);
+          data = Iv4Settings.decodeBase64(res);
         } catch (e) {
-          this.importFailed = true;
+          this.toast.error('Invalid import string');
+          this.tracking.exceptionTrack({ description: 'invalid import string', fatal: true });
           return;
         }
 
         if (data) {
           this.loadData(data);
+          this.toast.success('Import successful');
+          this.tracking.eventTrack('import_success', { label: 'Import Successful', category: 'vlsm_v4' });
         }
       },
       () => {}
     );
   }
 
-  public exportString(content: TemplateRef<NgbActiveModal>): void {
-    this.modalExportString = this.settings.value.encode();
+  public async exportString(content: TemplateRef<NgbActiveModal>) {
+    const settings = await this.storage.get().toPromise();
+    this.modalExportString = settings.encodeBase64();
     this.modalService.open(content, { size: 'lg' });
   }
 
   public copyExportString(): void {
     this.clipboardService.copy(this.modalExportString);
-    this.showCopyComplete = true;
-    setTimeout(() => {
-      this.showCopyComplete = false;
-    }, 1000);
+    this.toast.success('Copied to clipboard');
+    this.tracking.eventTrack('export_string_copy', { label: 'Export string copied', category: 'vlsm_v4' });
   }
 
-  private loadData(loadedData: Iv4Settings) {
-    if (!loadedData) {
-      this.settings.next(new Iv4Settings());
-      return;
-    }
-
-    if (!loadedData.formData?.requirements) {
-      loadedData.formData.requirements = [];
-    }
-
+  private loadData(loadedData: Iv4Settings | null) {
     if (loadedData.formData.requirements.length > 4) {
-      for (let i = 4; i < loadedData.formData.requirements.length; i++) {
+      loadedData.formData.requirements.forEach((_) => {
         this.reqs.push(this.createRequirement());
-      }
-      this.requirementsForm.updateValueAndValidity();
+      });
     }
 
     this.requirementsForm.patchValue({
       majorNetwork: loadedData.formData.majorNetwork,
       requirements: loadedData.formData.requirements,
     });
-    this.requirementsForm.updateValueAndValidity();
 
-    this.settings.next(loadedData);
+    this.storage.set(loadedData);
   }
 }
