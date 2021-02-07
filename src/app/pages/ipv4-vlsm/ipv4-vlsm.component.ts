@@ -145,16 +145,18 @@ export class Ipv4VlsmComponent implements OnInit {
 
   public hardReset(): void {
     this.storage.delete();
-    this.resetRequirements();
+    this.resetRequirements(true);
     this.tracking.eventTrack('hard_reset', { label: 'Hard reset', category: 'vlsm_v4' });
   }
 
-  public async resetRequirements() {
+  public async resetRequirements(hard = false) {
     const newSettings = new Iv4Settings();
-    const {
-      formData: { majorNetwork },
-    } = await this.storage.get().toPromise();
-    newSettings.formData.majorNetwork = majorNetwork;
+    if (!hard) {
+      const {
+        formData: { majorNetwork },
+      } = await this.storage.get().toPromise();
+      newSettings.formData.majorNetwork = majorNetwork;
+    }
 
     const controls = new FormArray<FormGroup<IPv4SubnetRequirements>>(
       newSettings.formData.requirements.map(() => this.createRequirement())
