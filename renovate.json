@@ -1,5 +1,5 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:base", ":semanticCommitTypeAll(build)"],
   "dependencyDashboard": true,
   "labels": ["dependencies"]
 }
