@@ -6739,7 +6739,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^7.0.1":
+"ip-address@npm:7.1.0":
   version: 7.1.0
   resolution: "ip-address@npm:7.1.0"
   dependencies:
@@ -7257,7 +7257,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"jsbn@npm:1.1.0, jsbn@npm:^1.1.0":
+"jsbn@npm:1.1.0":
   version: 1.1.0
   resolution: "jsbn@npm:1.1.0"
   checksum: 1400c412cdb40a703be30ec4faaaba99cdc63cb61caf8b8d5898d968d3ec50c2154fca5a7e4b950d1f55ee50668221001cf4054da5f49f73a05616361ff0a1c1
@@ -12241,18 +12241,18 @@ typescript@4.1.3:
     ts-node: 9.1.1
     tslib: 2.1.0
     typescript: 4.1.3
-    vlsm-tools: 0.7.0
+    vlsm-tools: 0.8.3
     zone.js: 0.11.3
   languageName: unknown
   linkType: soft
 
-"vlsm-tools@npm:0.7.0":
-  version: 0.7.0
-  resolution: "vlsm-tools@npm:0.7.0"
+"vlsm-tools@npm:0.8.3":
+  version: 0.8.3
+  resolution: "vlsm-tools@npm:0.8.3"
   dependencies:
-    ip-address: ^7.0.1
-    jsbn: ^1.1.0
-  checksum: cb511107e5185967b71aefff6cda6507ecd4d702181721b71dc604eb4c8ab6984be71bdf1eb425594df81913ec9cc560195833a563d9eb027dfeab8b988508d8
+    ip-address: 7.1.0
+    jsbn: 1.1.0
+  checksum: 8fdb0e43512f000e0b0e25b7fdbe446e93853cfdcedf18450fe8a4f234abe90b200459dff5d6481de83327055aa4e86eff5556631c5114d295925ffef2dff199
   languageName: node
   linkType: hard
 
