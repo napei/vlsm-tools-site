@@ -5,16 +5,20 @@ import { ContainerLayoutComponent } from './shared/layouts/container/container.c
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'vlsm-v4',
+    redirectTo: 'vlsm/v4',
     pathMatch: 'full',
   },
   {
-    path: 'vlsm-v4',
+    path: 'vlsm',
     component: ContainerLayoutComponent,
     children: [
       {
-        path: '',
+        path: 'v4',
         loadChildren: () => import('./pages/ipv4-vlsm/ipv4-vlsm.module').then((m) => m.Ipv4VlsmModule),
+      },
+      {
+        path: 'v6',
+        loadChildren: () => import('./pages/ipv6-vlsm/ipv6-vlsm.module').then((m) => m.Ipv6VlsmModule),
       },
     ],
   },

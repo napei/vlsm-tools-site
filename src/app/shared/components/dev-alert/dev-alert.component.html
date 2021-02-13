@@ -1,0 +1,14 @@
+<ngb-alert [dismissible]="false" [type]="'info'">
+  <p>
+    Notice: This site is still under development, so some things may not work correctly. If you are having any issues, or would like to file
+    a bug report/feature request, you can do so here
+    <a href="https://github.com/napei/vlsm-tools-site/issues" target="_blank" rel="noopener noreferrer"
+      >https://github.com/napei/vlsm-tools-site/issues</a
+    >
+  </p>
+  <ng-content></ng-content>
+  <p class="mb-0 " *ngIf="hasCallback">
+    If something isn't working, you can
+    <button class="btn btn-sm btn-danger" type="button" (click)="reset()">reset everything</button>
+  </p>
+</ngb-alert>

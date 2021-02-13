@@ -9,6 +9,7 @@ import { IPv4StorageService } from './ipv4-storage.service';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgbAlertModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ClipboardModule } from 'ngx-clipboard';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 export const routes: Routes = [{ path: '', component: Ipv4VlsmComponent }];
 
@@ -16,13 +17,14 @@ export const routes: Routes = [{ path: '', component: Ipv4VlsmComponent }];
   declarations: [Ipv4VlsmComponent],
   imports: [
     CommonModule,
+    SharedModule,
     RouterModule.forChild(routes),
     ReactiveFormsModule,
     FontAwesomeModule,
     NgxChartsModule,
     NgbModalModule,
     ClipboardModule,
-    NgbAlertModule
+    NgbAlertModule,
   ],
   providers: [IPv4StorageService],
 })

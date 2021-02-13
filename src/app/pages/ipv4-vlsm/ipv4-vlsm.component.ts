@@ -16,8 +16,6 @@ import { TitleService } from 'src/app/core/services/title.service';
 // eslint-disable-next-line max-len
 const IP_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([1-9]|[1-2][0-9]|3[0-2])$/;
 
-const storageIndex = 'ipv4';
-
 @Component({
   selector: 'app-ipv4-vlsm',
   templateUrl: './ipv4-vlsm.component.html',
@@ -182,7 +180,7 @@ export class Ipv4VlsmComponent implements OnInit {
         }
         let data: Iv4Settings;
         try {
-          data = Iv4Settings.decodeBase64(res);
+          data = new Iv4Settings().decode(res);
         } catch (e) {
           this.toast.error('Invalid import string');
           this.tracking.exceptionTrack({ description: 'invalid import string', fatal: true });
@@ -201,7 +199,7 @@ export class Ipv4VlsmComponent implements OnInit {
 
   public async exportString(content: TemplateRef<NgbActiveModal>) {
     const settings = await this.storage.get().toPromise();
-    this.modalExportString = settings.encodeBase64();
+    this.modalExportString = settings.encode();
     this.modalService.open(content, { size: 'lg' });
   }
 

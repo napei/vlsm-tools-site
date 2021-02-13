@@ -1,0 +1,133 @@
+<section>
+  <h1>IPv6 Subnetting</h1>
+  <hr />
+
+  <app-dev-alert>
+    <p>
+      Due to the enormus size of IPv6 networks, calculations are limited to {{ 1000 | number }} subnets by default. Calculating any more
+      will probably crash your browser. Furthermore, this complexity makes it infeasable to calculate subnets as you type.
+    </p>
+  </app-dev-alert>
+
+  <div class="row">
+    <div class="col-lg-6 mb-1 mb-lg-0">
+      <form [formGroup]="requirementsForm">
+        <div class="card mb-1">
+          <div class="card-header d-flex align-items-center">
+            <h5 class="flex-grow-1 mb-0">Major Network (CIDR)</h5>
+            <button class="btn btn-sm btn-danger float-end" (click)="resetMajorNetwork()">
+              <fa-icon [icon]="icons.undo"></fa-icon> Reset
+            </button>
+          </div>
+          <div class="card-body">
+            <input
+              type="text"
+              formControlName="majorAddress"
+              class="form-control"
+              [class.is-invalid]="hasRequiredError(f.majorAddress) || hasPatternError(f.majorAddress)"
+            />
+            <small class="invalid-feedback" *ngIf="hasRequiredError(f.majorAddress)">Major network is required</small>
+            <small class="invalid-feedback" *ngIf="hasPatternError(f.majorAddress)">That network address isn't valid.</small>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header d-flex align-items-center">
+            <h5 class="flex-grow-1 mb-0">Subdivisions</h5>
+            <button class="btn btn-sm btn-danger float-end" (click)="resetRequirements()">
+              <fa-icon [icon]="icons.undo"></fa-icon> Reset
+            </button>
+          </div>
+          <div class="card-body">
+            <div formGroupName="divisor" class="row g-3">
+              <div class="col-6">
+                <label for="" class="form-label">of subnet count</label>
+                <div class="input-group has-validation">
+                  <input
+                    type="number"
+                    name=""
+                    id=""
+                    formControlName="numSubnets"
+                    class="form-control"
+                    [class.is-invalid]="d.numSubnets.value > 1000 || hasMinError(d.numSubnets)"
+                  />
+                  <button class="btn btn-success" (click)="calculateSubnetCount()">Calculate</button>
+                  <div class="invalid-feedback" *ngIf="d.numSubnets.value > 1000">Results limited to 1000</div>
+                  <div class="invalid-feedback" *ngIf="hasMinError(d.numSubnets)">Must be positive</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <label for="" class="form-label">of CIDR mask size</label>
+                <div class="input-group has-validation">
+                  <select name="" id="" class="form-select" formControlName="cidrSize">
+                    <option *ngFor="let m of masks" [value]="m.value">{{ m.label }}</option>
+                  </select>
+                  <button class="btn btn-success" (click)="calculateCidrSize()">Calculate</button>
+                  <div class="invalid-feedback">Won't fit. Should be larger than major network's subnet.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-lg-6">
+      <div class="card mb-1">
+        <h5 class="card-header">Network Statistics</h5>
+        <div class="card-body">
+          <p>
+            <b>Compressed Address: </b><code>{{ network?.majorNetwork.correctForm() }}{{ network?.majorNetwork.subnet }}</code>
+          </p>
+          <p>
+            <b>Expanded Address: </b><code>{{ network?.majorNetwork.canonicalForm() }}{{ network?.majorNetwork.subnet }}</code>
+          </p>
+          <p>
+            <b>Start Address: </b><code>{{ network?.majorNetwork.startAddress().address }}</code>
+          </p>
+          <p>
+            <b>End Address: </b><code>{{ network?.majorNetwork.endAddress().correctForm() }}</code>
+          </p>
+          <p>
+            <b>Size: </b>
+            <code>
+              {{ network?.majorNetwork.sizeBigInteger.toString() | customNumber }}
+              {{ network?.majorNetwork.size === 1 ? 'Address' : 'Addresses' }}
+            </code>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive" *ngIf="results.length > 0">
+    <table class="table table-sm table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Network Address</th>
+          <th scope="col">Short Address</th>
+          <th scope="col">Range</th>
+          <th scope="col">Number of /64s</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let n of results; index as i">
+          <tr>
+            <th scope="row">{{ i + 1 | number }}</th>
+            <td>
+              <code>{{ n.address }}</code>
+            </td>
+            <td>
+              <code>{{ n.correctForm() }}{{ n.subnet }}</code>
+            </td>
+            <td>
+              <code>{{ n.startAddress().correctForm() }} -> {{ n.endAddress().correctForm() }}</code>
+            </td>
+            <td>
+              <code>{{ n.possibleSubnets(64) | customNumber }}</code>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</section>

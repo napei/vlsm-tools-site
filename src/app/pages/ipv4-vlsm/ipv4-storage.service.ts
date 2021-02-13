@@ -2,9 +2,11 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { fromUnixTime, getUnixTime } from 'date-fns';
+import { assign } from 'lodash-es';
 import { of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { Encodable } from 'src/app/core/helpers';
 import { ParseIPv4Address, IPv4SubnetRequirements } from 'vlsm-tools';
 
 export const isSubnetRequirementsValid = (r: IPv4SubnetRequirements): boolean => r.label && r.label.length > 0 && r.size && r.size > 0;
@@ -13,7 +15,7 @@ export interface Iv4RequirementsForm {
   requirements: IPv4SubnetRequirements[];
 }
 
-export class Iv4Settings {
+export class Iv4Settings implements Encodable<Iv4Settings> {
   public modified: Date;
   public formData: Iv4RequirementsForm;
 
@@ -31,14 +33,42 @@ export class Iv4Settings {
   }
 
   /**
+   * Encodes the class as a base64 string using a custom format
+   * unixTimestamp|majorNetwork|label:size|label:size...
+   *
+   * @returns Base64 String
+   * @memberof Iv4Settings
+   */
+  public encode(): string {
+    const output: any[] = [];
+    const dateString = getUnixTime(this.modified);
+    output.push(dateString);
+    if (this.formData) {
+      const majorNetwork = encodeURIComponent(this.formData.majorNetwork);
+      const requirements = this.formData.requirements
+        .filter((r) => isSubnetRequirementsValid(r))
+        .map((r) => `${encodeURIComponent(r.label)}:${r.size}`);
+
+      if (majorNetwork) {
+        output.push(majorNetwork);
+      }
+      if (requirements) {
+        output.push(...requirements);
+      }
+    }
+
+    return btoa(output.join('|'));
+  }
+
+  /**
    * Decodes a Base64 string created by encoding a class
    *
    * @static
-   * @param data Input base64 string
+   * @param input Input base64 string
    * @returns Parsed settings class
    * @memberof Iv4Settings
    */
-  public static decodeBase64(data: string): Iv4Settings {
+  public decode(input: string): Iv4Settings {
     /**
      * Things to check
      *
@@ -47,9 +77,13 @@ export class Iv4Settings {
      * Should have a major network
      */
     // Decode incoming base64
-    const decoded = atob(data);
+    const decoded = atob(input);
     if (decoded.indexOf('|') === -1) {
       throw new Error('Input string does not contain pipe delimiter');
+    }
+
+    if (decoded.startsWith('v6')) {
+      throw new Error('This looks like a IPv6 string!');
     }
 
     const parts = decoded.split('|');
@@ -105,35 +139,8 @@ export class Iv4Settings {
     }
     out.formData = { majorNetwork, requirements };
 
-    return out;
-  }
-
-  /**
-   * Encodes the class as a base64 string using a custom format
-   * unixTimestamp|majorNetwork|label:size|label:size...
-   *
-   * @returns Base64 String
-   * @memberof Iv4Settings
-   */
-  public encodeBase64(): string {
-    const output: any[] = [];
-    const dateString = getUnixTime(this.modified);
-    output.push(dateString);
-    if (this.formData) {
-      const majorNetwork = encodeURIComponent(this.formData.majorNetwork);
-      const reqs = this.formData.requirements
-        .filter((r) => isSubnetRequirementsValid(r))
-        .map((r) => `${encodeURIComponent(r.label)}:${r.size}`);
-
-      if (majorNetwork) {
-        output.push(majorNetwork);
-      }
-      if (reqs) {
-        output.push(...reqs);
-      }
-    }
-
-    return btoa(output.join('|'));
+    assign(this, out);
+    return this;
   }
 }
 
@@ -146,8 +153,7 @@ export class IPv4StorageService {
       return new Iv4Settings();
     }
     try {
-      const settings = Iv4Settings.decodeBase64(s);
-      return settings;
+      return new Iv4Settings().decode(s);
     } catch (e) {
       this.toast.error('Invalid config detected in browser storage. Please reset.');
       return null;
@@ -161,7 +167,7 @@ export class IPv4StorageService {
   }
 
   public set(settings: Iv4Settings): void {
-    const str = settings.encodeBase64();
+    const str = settings.encode();
     this.storage.set(this.key, str).subscribe({
       next: () => {},
       error: (e) => {

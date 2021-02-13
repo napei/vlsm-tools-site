@@ -2,19 +2,7 @@
   <h1>IPv4 Subnetting</h1>
   <hr />
 
-  <ngb-alert [dismissible]="false" [type]="'info'">
-    <p>
-      Notice: This site is still under development, so some things may not work correctly. If you are having any issues, or would like to
-      file a bug report/feature request, you can do so here
-      <a href="https://github.com/napei/vlsm-tools-site/issues" target="_blank" rel="noopener noreferrer"
-        >https://github.com/napei/vlsm-tools-site/issues</a
-      >
-    </p>
-    <p class="mb-0">
-      If something isn't working, you can
-      <button class="btn btn-sm btn-danger" type="button" (click)="hardReset()">reset everything</button>
-    </p>
-  </ngb-alert>
+  <app-dev-alert (hardReset)="hardReset()"></app-dev-alert>
 
   <div class="row">
     <div class="col-lg-6 mb-1 mb-lg-0">
@@ -45,7 +33,7 @@
                   </div>
                 </div>
                 <div class="col">
-                  <div class="input-group">
+                  <div class="input-group has-validation">
                     <input
                       type="number"
                       min="0"
@@ -57,7 +45,7 @@
                     <button class="btn btn-danger" [disabled]="reqs.controls.length < 2" (click)="deleteRequirement(i)">
                       <fa-icon [icon]="icons.cross"></fa-icon>
                     </button>
-                    <small class="invalid-feedback">Must be positive</small>
+                    <div class="invalid-feedback">Must be positive</div>
                   </div>
                 </div>
               </div>
