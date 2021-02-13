@@ -97,7 +97,9 @@
       </div>
     </div>
   </div>
-
+  <p *ngIf="results.length === 1000">
+    <small>Showing {{ 1000 | number }} of {{ possibleSubnets | customNumber }} possible subnets.</small>
+  </p>
   <div class="table-responsive" *ngIf="results.length > 0">
     <table class="table table-sm table-striped table-hover">
       <thead>
@@ -110,23 +112,21 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let n of results; index as i">
-          <tr>
-            <th scope="row">{{ i + 1 | number }}</th>
-            <td>
-              <code>{{ n.address }}</code>
-            </td>
-            <td>
-              <code>{{ n.correctForm() }}{{ n.subnet }}</code>
-            </td>
-            <td>
-              <code>{{ n.startAddress().correctForm() }} -> {{ n.endAddress().correctForm() }}</code>
-            </td>
-            <td>
-              <code>{{ n.possibleSubnets(64) | customNumber }}</code>
-            </td>
-          </tr>
-        </ng-container>
+        <tr *ngFor="let n of results; index as i">
+          <th scope="row">{{ i + 1 | number }}</th>
+          <td>
+            <code>{{ n.address }}</code>
+          </td>
+          <td>
+            <code>{{ n.correctForm() }}{{ n.subnet }}</code>
+          </td>
+          <td>
+            <code>{{ n.startAddress().correctForm() }} -> {{ n.endAddress().correctForm() }}</code>
+          </td>
+          <td>
+            <code>{{ n.possibleSubnets(64) | customNumber }}</code>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>

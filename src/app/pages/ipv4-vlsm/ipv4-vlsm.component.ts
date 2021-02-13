@@ -73,6 +73,7 @@ export class Ipv4VlsmComponent implements OnInit {
           majorNetwork: v.majorNetwork,
           requirements: v.requirements,
         };
+
         this.storage.set(newSettings);
       }
     });
@@ -150,19 +151,23 @@ export class Ipv4VlsmComponent implements OnInit {
   public async resetRequirements(hard = false) {
     const newSettings = new Iv4Settings();
     if (!hard) {
-      const {
-        formData: { majorNetwork },
-      } = await this.storage.get().toPromise();
-      newSettings.formData.majorNetwork = majorNetwork;
+      const stored = await this.storage.get().toPromise();
+      newSettings.formData.majorNetwork = stored.formData.majorNetwork;
     }
 
-    const controls = new FormArray<FormGroup<IPv4SubnetRequirements>>(
-      newSettings.formData.requirements.map(() => this.createRequirement())
+    const {
+      formData: { majorNetwork, requirements },
+    } = newSettings;
+
+    this.reqs.clear();
+    this.requirementsForm.setControl(
+      'requirements',
+      new FormArray<FormGroup<IPv4SubnetRequirements>>(requirements.map(() => this.createRequirement()))
     );
-    this.requirementsForm.registerControl('requirements', controls);
-    this.requirementsForm.patchValue({ majorNetwork: newSettings.formData.majorNetwork, requirements: newSettings.formData.requirements });
+    this.requirementsForm.patchValue({ majorNetwork, requirements });
     this.chartData = [];
     this.storage.set(newSettings);
+
     this.toast.success('Requirements reset');
     this.tracking.eventTrack('req_reset', { label: 'Requirements reset', category: 'vlsm_v4' });
   }
@@ -210,15 +215,19 @@ export class Ipv4VlsmComponent implements OnInit {
   }
 
   private loadData(loadedData: Iv4Settings | null) {
-    if (loadedData.formData.requirements.length > 4) {
-      loadedData.formData.requirements.forEach((_) => {
+    const {
+      formData: { majorNetwork, requirements },
+    } = loadedData;
+
+    if (requirements.length > 4) {
+      for (let i = 4; i < requirements.length; i++) {
         this.reqs.push(this.createRequirement());
-      });
+      }
     }
 
     this.requirementsForm.patchValue({
-      majorNetwork: loadedData.formData.majorNetwork,
-      requirements: loadedData.formData.requirements,
+      majorNetwork,
+      requirements,
     });
 
     this.storage.set(loadedData);

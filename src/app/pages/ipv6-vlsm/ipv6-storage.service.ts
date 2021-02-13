@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import { StorageMap } from '@ngx-pwa/local-storage';
+import { fromUnixTime, getUnixTime } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Encodable } from 'src/app/core/helpers';
@@ -14,6 +15,8 @@ export interface Iv6RequirementsForm {
   majorAddress: string;
   divisor: Divisor;
 }
+
+declare type Iv6StorageFormat = [number | null, string | null, number | null, number | null];
 
 export class Iv6Settings implements Encodable<Iv6Settings> {
   public modified: Date;
@@ -31,7 +34,12 @@ export class Iv6Settings implements Encodable<Iv6Settings> {
   }
 
   public encode(): string {
-    const out = { modified: this.modified, formData: this.formData };
+    const out: Iv6StorageFormat = [
+      getUnixTime(this.modified),
+      this.formData.majorAddress,
+      this.formData.divisor.numSubnets,
+      this.formData.divisor.cidrSize,
+    ];
     // Just use JSON because it's small
     const str = JSON.stringify(out);
     return btoa(str);
@@ -39,18 +47,16 @@ export class Iv6Settings implements Encodable<Iv6Settings> {
 
   public decode(input: string): Iv6Settings {
     const data = atob(input);
-    const obj: { modified: Date; formData: Iv6RequirementsForm } = JSON.parse(data);
-    if (obj.modified) {
-      this.modified = obj.modified;
-    } else {
-      throw new Error('Missing modified date');
-    }
+    const obj: Iv6StorageFormat = JSON.parse(data);
+    this.modified = fromUnixTime(obj[0]);
 
-    if (obj.formData) {
-      this.formData = obj.formData;
-    } else {
-      throw new Error('Missing form data');
-    }
+    this.formData = {
+      majorAddress: obj[1],
+      divisor: {
+        numSubnets: obj[2],
+        cidrSize: obj[3],
+      },
+    };
 
     return this;
   }

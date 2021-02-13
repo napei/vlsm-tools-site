@@ -115,20 +115,18 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let s of network.subnets">
-          <tr>
-            <th scope="row">{{ s.requirements.label }}</th>
-            <td>{{ s.requirements.size }}</td>
-            <td>{{ s.networkSize }}</td>
-            <td>{{ s.unusedSize }}</td>
-            <td>{{ s.address.addressMinusSuffix }}</td>
-            <td>{{ s.address.subnet }}</td>
-            <td>{{ s.subnetMaskDottedDecimal }}</td>
-            <td>{{ s.address.startAddressExclusive().address }} - {{ s.address.endAddressExclusive().address }}</td>
-            <td>{{ s.address.endAddress().address }}</td>
-            <td>{{ s.subnetMaskWildcard }}</td>
-          </tr>
-        </ng-container>
+        <tr *ngFor="let s of network.subnets">
+          <th scope="row">{{ s.requirements.label }}</th>
+          <td>{{ s.requirements.size }}</td>
+          <td>{{ s.networkSize }}</td>
+          <td>{{ s.unusedSize }}</td>
+          <td>{{ s.address.addressMinusSuffix }}</td>
+          <td>{{ s.address.subnet }}</td>
+          <td>{{ s.subnetMaskDottedDecimal }}</td>
+          <td>{{ s.address.startAddressExclusive().address }} - {{ s.address.endAddressExclusive().address }}</td>
+          <td>{{ s.address.endAddress().address }}</td>
+          <td>{{ s.subnetMaskWildcard }}</td>
+        </tr>
       </tbody>
     </table>
     <small>Your subnetting settings will be stored in your browser's storage.</small>

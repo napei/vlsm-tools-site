@@ -6,7 +6,7 @@ import { assign } from 'lodash-es';
 import { of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Encodable } from 'src/app/core/helpers';
+import { DelimitedString, Encodable } from 'src/app/core/helpers';
 import { ParseIPv4Address, IPv4SubnetRequirements } from 'vlsm-tools';
 
 export const isSubnetRequirementsValid = (r: IPv4SubnetRequirements): boolean => r.label && r.label.length > 0 && r.size && r.size > 0;
@@ -40,24 +40,25 @@ export class Iv4Settings implements Encodable<Iv4Settings> {
    * @memberof Iv4Settings
    */
   public encode(): string {
-    const output: any[] = [];
+    const output: DelimitedString = new DelimitedString('|');
     const dateString = getUnixTime(this.modified);
-    output.push(dateString);
+    output.add(dateString.toString());
     if (this.formData) {
-      const majorNetwork = encodeURIComponent(this.formData.majorNetwork);
-      const requirements = this.formData.requirements
-        .filter((r) => isSubnetRequirementsValid(r))
-        .map((r) => `${encodeURIComponent(r.label)}:${r.size}`);
-
+      const { majorNetwork, requirements } = this.formData;
       if (majorNetwork) {
-        output.push(majorNetwork);
+        output.add(majorNetwork);
       }
+
       if (requirements) {
-        output.push(...requirements);
+        output.add(
+          ...requirements
+            .filter((r) => isSubnetRequirementsValid(r))
+            .map((r) => new DelimitedString(':', r.label, r.size.toString()).encode())
+        );
       }
     }
 
-    return btoa(output.join('|'));
+    return btoa(output.encode());
   }
 
   /**
@@ -78,15 +79,11 @@ export class Iv4Settings implements Encodable<Iv4Settings> {
      */
     // Decode incoming base64
     const decoded = atob(input);
-    if (decoded.indexOf('|') === -1) {
-      throw new Error('Input string does not contain pipe delimiter');
-    }
-
     if (decoded.startsWith('v6')) {
       throw new Error('This looks like a IPv6 string!');
     }
 
-    const parts = decoded.split('|');
+    const { parts } = DelimitedString.decode(decoded, '|');
     if (parts.length < 1) {
       throw new Error('Not enough parts to decode');
     }
@@ -106,10 +103,11 @@ export class Iv4Settings implements Encodable<Iv4Settings> {
       throw new Error('Invalid date format');
     }
 
-    const majorNetwork: string = decodeURIComponent(parts[1]);
+    const majorNetwork: string = parts[1];
     if (!ParseIPv4Address(majorNetwork)) {
       throw new Error('Invalid major address');
     }
+
     // Remove first two parts
     parts.shift();
     parts.shift();
@@ -118,9 +116,9 @@ export class Iv4Settings implements Encodable<Iv4Settings> {
       // Requirements
       requirements = parts.map((r: string) => {
         try {
-          const sub: string[] = r.split(':');
-          const label: string = decodeURIComponent(sub[0]);
-          const size: number = parseInt(sub[1], 10);
+          const { parts: p } = DelimitedString.decode(r, ':');
+          const label: string = p[0];
+          const size: number = parseInt(p[1], 10);
           return { label, size };
         } catch (e) {
           throw new Error('Error while parsing requirements');

@@ -25,6 +25,7 @@ export class Ipv6VlsmComponent implements OnInit {
   public network: IPv6Network;
   public settings$: Observable<Iv6Settings>;
   public results: IPv6Address[] = new Array<IPv6Address>();
+  public possibleSubnets: string;
 
   public icons = { undo: faUndo };
   public masks: { label: string; value: number }[];
@@ -129,6 +130,7 @@ export class Ipv6VlsmComponent implements OnInit {
 
     try {
       this.results = this.network.subdivideIntoPrefixes(this.d.cidrSize.value);
+      this.possibleSubnets = this.network.majorNetwork.possibleSubnets(this.d.cidrSize.value);
       t.updateMessage('Finished');
       t.updateToast({ type: 'success', duration: 3000 });
     } catch (e) {
@@ -157,9 +159,7 @@ export class Ipv6VlsmComponent implements OnInit {
 
   private loadData(loadedData: Iv6Settings | null) {
     if (!loadedData) {
-      const s = new Iv6Settings();
-      this.requirementsForm.patchValue(s.formData);
-      this.storage.set(s);
+      loadedData = new Iv6Settings();
     }
 
     this.requirementsForm.patchValue(loadedData.formData);
