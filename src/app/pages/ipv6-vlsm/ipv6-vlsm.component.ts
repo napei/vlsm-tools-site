@@ -163,5 +163,6 @@ export class Ipv6VlsmComponent implements OnInit {
     }
 
     this.requirementsForm.patchValue(loadedData.formData);
+    this.storage.set(loadedData);
   }
 }
