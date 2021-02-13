@@ -5,12 +5,8 @@
   "targets": {
     "vlsm-tools": {
       "hosting": {
-        "test": [
-          "test-vlsm-tools"
-        ],
-        "production": [
-          "vlsm-tools"
-        ]
+        "test": ["test-vlsm-tools"],
+        "production": ["vlsm-tools"]
       }
     }
   }
