@@ -44,7 +44,7 @@
     "angulartics2": "10.0.0",
     "bootstrap": "5.0.0-beta2",
     "date-fns": "2.17.0",
-    "lodash-es": "4.17.20",
+    "lodash-es": "4.17.21",
     "ngx-clipboard": "14.0.1",
     "rxjs": "6.6.3",
     "tslib": "2.1.0",
