@@ -11156,6 +11156,15 @@ resolve@1.19.0:
   languageName: node
   linkType: hard
 
+"rxjs@npm:6.6.6":
+  version: 6.6.6
+  resolution: "rxjs@npm:6.6.6"
+  dependencies:
+    tslib: ^1.9.0
+  checksum: c97b410e791b3259439be48cd37119b63eedc3809a5895d884a7ac27a6934ae4ec246be3d76f1b2f3b47c72a96500ad30977545dc8b0f4a0f98c52f5f773a8ea
+  languageName: node
+  linkType: hard
+
 "safe-buffer@npm:5.1.2, safe-buffer@npm:~5.1.0, safe-buffer@npm:~5.1.1":
   version: 5.1.2
   resolution: "safe-buffer@npm:5.1.2"
@@ -13125,7 +13134,7 @@ typescript@4.1.5:
     lodash-es: 4.17.20
     ngx-clipboard: 14.0.1
     prettier: 2.2.1
-    rxjs: 6.6.3
+    rxjs: 6.6.6
     ts-node: 9.1.1
     tslib: 2.1.0
     typescript: 4.1.5

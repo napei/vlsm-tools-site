@@ -46,7 +46,7 @@
     "date-fns": "2.17.0",
     "lodash-es": "4.17.20",
     "ngx-clipboard": "14.0.1",
-    "rxjs": "6.6.3",
+    "rxjs": "6.6.6",
     "tslib": "2.1.0",
     "vlsm-tools": "0.10.4",
     "zone.js": "0.11.3"
