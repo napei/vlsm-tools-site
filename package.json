@@ -40,7 +40,7 @@
     "@ngneat/overview": "1.0.0",
     "@ngneat/reactive-forms": "1.7.0",
     "@ngx-pwa/local-storage": "11.1.0",
-    "@swimlane/ngx-charts": "17.0.0",
+    "@swimlane/ngx-charts": "17.0.1",
     "angulartics2": "10.0.0",
     "bootstrap": "5.0.0-beta2",
     "date-fns": "2.17.0",
