@@ -1959,16 +1959,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngneat/hot-toast@npm:1.0.8":
-  version: 1.0.8
-  resolution: "@ngneat/hot-toast@npm:1.0.8"
+"@ngneat/hot-toast@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@ngneat/hot-toast@npm:1.1.1"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     "@angular/common": ^8.2.14
     "@angular/core": ^8.2.14
     "@ngneat/overview": ^1.0.0
-  checksum: 7603767f17ac697e3836b9445a362dd6aadb4b7adf86aa388823c2327c6f8b900073dee0098a6518f27ff362951a992eef897e53b2f9844896ef51bc200091f6
+  checksum: 55e906b1b2a3d57203e77a344673e139e3737de023f7032b3f2c770b49bdcaa5c34e38ed60271c084651da45c365d7a71a6c4c3e1f8924af8bf951c6b9b1d57b
   languageName: node
   linkType: hard
 
@@ -13101,7 +13101,7 @@ typescript@4.1.5:
     "@fortawesome/free-regular-svg-icons": 5.15.2
     "@fortawesome/free-solid-svg-icons": 5.15.2
     "@ng-bootstrap/ng-bootstrap": 9.0.2
-    "@ngneat/hot-toast": 1.0.8
+    "@ngneat/hot-toast": 1.1.1
     "@ngneat/overview": 1.0.0
     "@ngneat/reactive-forms": 1.7.0
     "@ngx-pwa/local-storage": 11.1.0
