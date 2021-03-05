@@ -4926,10 +4926,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:2.17.0":
-  version: 2.17.0
-  resolution: "date-fns@npm:2.17.0"
-  checksum: 51ee9e264aac54d2a16471691d560838bad681f729573f520b03ec0c21f28904c73bf98ec2d33603e71bdabf8506140449c2b50d0db6fdd042faed9fe5467b92
+"date-fns@npm:2.19.0":
+  version: 2.19.0
+  resolution: "date-fns@npm:2.19.0"
+  checksum: 99ec34199c3a61cdb7fd27dcd68dd3c0c949ddfc34aa1daba9a6b2e0b5381bf42d8955d28ec2770f72eee429f5e7ab10fadba7b69108379d2545f003461d04f7
   languageName: node
   linkType: hard
 
@@ -13115,7 +13115,7 @@ typescript@4.1.5:
     angulartics2: 10.0.0
     bootstrap: 5.0.0-beta2
     commitlint: 11.0.0
-    date-fns: 2.17.0
+    date-fns: 2.19.0
     eslint: 7.20.0
     eslint-plugin-import: 2.22.1
     eslint-plugin-jsdoc: 31.6.1
