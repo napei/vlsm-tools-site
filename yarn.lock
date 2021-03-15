@@ -2266,10 +2266,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@types/prettier@npm:2.2.0"
-  checksum: 68d29aee4cc009c863388cce564406599630cd287c830436e943cebfd38280c15903e2e74f0270b25f8ef84307030600e1fd4bdc3205c2aa17eae758b9560d3e
+"@types/prettier@npm:2.2.3":
+  version: 2.2.3
+  resolution: "@types/prettier@npm:2.2.3"
+  checksum: b7e80288f9f776caca84391a7a217b8baac6b4fce00bb9701af69299d465cb8faf17466f0af0803970c74d2c191767ca729a6d21a2f7e2ce552d1ef6cc0d653a
   languageName: node
   linkType: hard
 
@@ -13109,7 +13109,7 @@ typescript@4.1.5:
     "@types/jsbn": 1.2.29
     "@types/lodash-es": 4.17.4
     "@types/node": 14.14.27
-    "@types/prettier": 2.2.0
+    "@types/prettier": 2.2.3
     "@typescript-eslint/eslint-plugin": 4.15.0
     "@typescript-eslint/parser": 4.15.0
     angulartics2: 10.0.0
