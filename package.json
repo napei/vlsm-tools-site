@@ -38,7 +38,7 @@
     "@ng-bootstrap/ng-bootstrap": "9.0.2",
     "@ngneat/hot-toast": "1.0.8",
     "@ngneat/overview": "1.0.0",
-    "@ngneat/reactive-forms": "1.7.0",
+    "@ngneat/reactive-forms": "1.7.1",
     "@ngx-pwa/local-storage": "11.1.0",
     "@swimlane/ngx-charts": "17.0.0",
     "angulartics2": "10.0.0",

@@ -1981,12 +1981,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngneat/reactive-forms@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@ngneat/reactive-forms@npm:1.7.0"
+"@ngneat/reactive-forms@npm:1.7.1":
+  version: 1.7.1
+  resolution: "@ngneat/reactive-forms@npm:1.7.1"
   dependencies:
     tslib: ^2.0.0
-  checksum: f318a2b6b419152dd07672ef433e140d8559c1450d9a2405930247375be17b5d878880f0c702f22e2764b66cb6cbcd7bc30fd0aed10b76ec236cd0c9ddd95b9d
+  checksum: 925080851673fd5e8abcba7cabca5def31445b9db960ac3c2810cf23c2cb17bdda23849bd334da43ce2ed3ddd6d4a981929d7c1395df79d8af1ad1ad1cdca751
   languageName: node
   linkType: hard
 
@@ -13103,7 +13103,7 @@ typescript@4.1.5:
     "@ng-bootstrap/ng-bootstrap": 9.0.2
     "@ngneat/hot-toast": 1.0.8
     "@ngneat/overview": 1.0.0
-    "@ngneat/reactive-forms": 1.7.0
+    "@ngneat/reactive-forms": 1.7.1
     "@ngx-pwa/local-storage": 11.1.0
     "@swimlane/ngx-charts": 17.0.0
     "@types/jsbn": 1.2.29
